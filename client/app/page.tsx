@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import Login from "./user/login";
+import './globals.css'
 
 
 function page() {
@@ -21,14 +22,40 @@ function page() {
   }, [])
 
   return (
-    <div>
-    <div>
-      {JSON.stringify(message)}
-    </div>
-      
-        <Login/>
 
-    </div>
+      // {JSON.stringify(message)}
+    <body>
+      <div className='wrapper'>
+        <form>
+          <h1>Ingresar</h1>
+          <div className='input-box'>
+              <input type='text' placeholder='Usuario' 
+              required/>
+              <i className='bx bxs-user'></i>
+          </div>
+
+          <div className='input-box'>
+              <input type='password' placeholder='Contraseña' 
+              required/>
+              <i className='bx bxs-lock-alt'></i>
+          </div>
+
+          <div className='remember-forgot'>
+              <label><input type='checkbox'/> Recordar  
+              </label>
+              <a href='#'>¿Has olvidado tu contraseña?</a>
+          </div>
+
+          <button type='submit' className='btn'>Login</button>
+
+          <div className='register-link'>
+              <p>No tengo una cuenta?
+                <a href='#'> Registrarse</a>
+              </p>
+          </div>
+        </form>
+      </div>
+    </body>
   )
 }
 
