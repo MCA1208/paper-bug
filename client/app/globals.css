@@ -89,7 +89,7 @@ body {
  .wrapper .btn {
     width: 100%;
     height: 45px;
-    background: #fff;
+    /* background: #00c2ff; */
     border: none;
     outline: none;
     border-radius: 40px;

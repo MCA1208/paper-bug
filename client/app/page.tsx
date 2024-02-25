@@ -1,6 +1,5 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import Login from "./user/login";
 import './globals.css'
 
 
@@ -46,11 +45,11 @@ function page() {
               <a href='#'>¿Has olvidado tu contraseña?</a>
           </div>
 
-          <button type='submit' className='btn'>Login</button>
+          <button type='submit' className='btn btn btn-primary'>Login</button>
 
           <div className='register-link'>
               <p>No tengo una cuenta?
-                <a href='#'> Registrarse</a>
+                <a href='/dashboard/register'> Registrarse</a>
               </p>
           </div>
         </form>
