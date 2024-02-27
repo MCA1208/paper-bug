@@ -1,4 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import Swal from 'sweetalert2';
 
 export const metadata = {
   title: 'Papper Bugs',

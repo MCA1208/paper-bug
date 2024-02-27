@@ -4,52 +4,139 @@ import React from 'react';
 import '../../globals.css';
 import './register.css';
 import { useRouter } from 'next/navigation'
-import { inherits } from 'util';
-
+import  { useState } from 'react';
+import Swal from 'sweetalert2';
 
 
 function registerPage() {
   const router = useRouter()
+
+  const [message, setMessage] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeat, setRepeat] = useState("");
+
+
+  const getUser = () => {
+
+    fetch("http://localhost:8080/users/2").then(
+        response => response.json() 
+      ).then(
+        data =>{
+          console.log(`ver json  client::: ${JSON.stringify(data)}`);
+          setMessage(data);
+
+          console.log(`mesaje amacenado: ${JSON.stringify(message)}`);
+        }
+      )
+  };
+
+  const createuser = () => {
+
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email, password: password })
+    };
+
+    console.log(requestOptions);
+
+    fetch("http://localhost:8080/createusers", requestOptions)
+    .then(
+      response => response.json() 
+    ).then(
+      data =>{
+
+        if(data.result.status){
+
+          Swal.fire({            
+            icon: "success",
+            title: "Se creó el usuario con éxito!",
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+        }
+        else{
+          Swal.fire({
+            title: 'Error!',
+            text: 'No se pudo crear el usuario',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          })
+        }
+      }
+    )
+    
+  }
+
+  const testAlert = () => {
+    Swal.fire({
+      title: 'Error!',
+      text: 'Do you want to continue',
+      icon: 'error',
+      confirmButtonText: 'Cerrar'
+    })
+  }
+
+
   return (
     <body>
       <div className='wrapper'>
         <form>
           <h1>Registrarse</h1>
+          
           <div className='input-box'>
-              <input type='text' placeholder='Usuario' 
-              required/>
+              <input type='text' placeholder='Alias'
+                  value={name}
+                  onChange={  e => setName(e.target.value) }
+                  required/>
               <i className='bx bxs-user'></i>
           </div>
 
           <div className='input-box'>
-              <input type='password' placeholder='Contraseña' 
-              required/>
+              <input type='text' placeholder='Email'
+                  value={email}
+                  onChange={  e => setEmail(e.target.value) }
+                  required/>
+              <i className='bx bxs-user'></i>
+          </div>
+
+          <div className='input-box'>
+              <input type='password' placeholder='Contraseña'                  
+                  value={password}
+                  onChange={ e => setPassword(e.target.value)}
+                  required/>
               <i className='bx bxs-lock-open'></i>
           </div>
 
           <div className='input-box'>
               <input type='password' placeholder='Repetir Contraseña' 
-              required/>
+                  value={repeat}
+                  onChange={ e => setRepeat(e.target.value)}
+                  required/>              
               <i className='bx bxs-lock'></i>
           </div>
 
+        </form>
           <div className='row'>
             <div className='col-6'>
-              <button type='submit' className='btn-register btn btn-secondary' onClick={() => router.push('/')}>
+              <button type='submit' className='btn-register btn btn-secondary' 
+              onClick={() => router.push('/')}>
               <i  className='bx bx-arrow-back boxicon'></i>
                   Volver
               </button>
               
             </div>
             <div className='col-6'>
-              <button type='submit' className='btn-register btn btn-primary boxicon'>
-              <i className='bx bxs-user-plus boxicon'></i>
+              <button type='submit' className='btn-register btn btn-primary boxicon'
+                onClick={createuser}>
+                <i className='bx bxs-user-plus boxicon'></i>
                   Crear                  
               </button>              
             </div>
           </div>
-          
-        </form>
       </div>
     </body>
   )
