@@ -17,22 +17,58 @@ function registerPage() {
   const [password, setPassword] = useState("");
   const [repeat, setRepeat] = useState("");
 
+  // const getUser = () => {
 
-  const getUser = () => {
+  //   fetch("http://localhost:8080/users/2").then(
+  //       response => response.json() 
+  //     ).then(
+  //       data =>{
+  //         console.log(`ver json  client::: ${JSON.stringify(data)}`);
+  //         setMessage(data);
 
-    fetch("http://localhost:8080/users/2").then(
-        response => response.json() 
-      ).then(
-        data =>{
-          console.log(`ver json  client::: ${JSON.stringify(data)}`);
-          setMessage(data);
-
-          console.log(`mesaje amacenado: ${JSON.stringify(message)}`);
-        }
-      )
-  };
-
+  //         console.log(`mesaje amacenado: ${JSON.stringify(message)}`);
+  //       }
+  //     )
+  // };
   const createuser = () => {
+
+    if (!name ||!email || !password) { 
+      Swal.fire({
+        title: 'Error!',
+        text: 'Todos los campos son obligatorios',
+        icon: 'error',
+        confirmButtonText: 'Cerrar',
+        timer: 3000
+      })
+      return true;
+    }  else if (!/\S+@\S+\.\S+/.test(email)) { 
+      Swal.fire({
+        title: 'Error!',
+        text: 'Email es invalido',
+        icon: 'error',
+        confirmButtonText: 'Cerrar',
+        timer: 3000
+      });
+      return true;
+    } else if (password != repeat){
+      Swal.fire({
+        title: 'Error!',
+        text: 'No coicide la contraseñas',
+        icon: 'error',
+        confirmButtonText: 'Cerrar',
+        timer: 3000
+      });
+      return true;
+    } else if (password.length < 6) { 
+      Swal.fire({
+        title: 'Error!',
+        text: 'La contraseña debe tener mas de 6 caracteres',
+        icon: 'error',
+        confirmButtonText: 'Cerrar',
+        timer: 3000
+      });
+      return true;
+    } 
 
     const requestOptions = {
       method: 'POST',
@@ -48,7 +84,7 @@ function registerPage() {
     ).then(
       data =>{
 
-        if(data.result.status){
+        if(data.result.status == true){
 
           Swal.fire({            
             icon: "success",
@@ -61,9 +97,10 @@ function registerPage() {
         else{
           Swal.fire({
             title: 'Error!',
-            text: 'No se pudo crear el usuario',
+            text: 'No se pudo crear el usuario' +' '+ data.result.data,
             icon: 'error',
-            confirmButtonText: 'Cerrar'
+            confirmButtonText: 'Cerrar',
+            timer: 3000
           })
         }
       }
