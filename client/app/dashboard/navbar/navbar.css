@@ -1,0 +1,11 @@
+.bx {
+    color: blue;
+}
+
+li {
+    margin: 10px;
+}
+
+.btn {
+    --bs-btn-padding-x: -0.25rem;
+}

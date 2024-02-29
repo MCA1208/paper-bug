@@ -100,18 +100,17 @@ router.post('/login', async (req , res)  => {
         else
         {
             result.status = false;
-            result.data = JSON.stringify('No coincide la contraseña')
+            result.data = 'No coincide la contraseña';
             res.json({ result });
         }
 
 
     } catch (err) {
 
-        console.log(err);
         result.status = false;
-        result.data = JSON.stringify(err)
+        result.data = err.toString();
 
-        res.json(result);
+        res.json({ result });
     }
 
 });
