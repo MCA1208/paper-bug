@@ -17,6 +17,7 @@
     background: url(../../img/fondo2.jpg) no-repeat; 
     background-size: cover;
     background-position: center;
+    filter: hue-rotate(245deg);
 }
 body{
     display: none;
