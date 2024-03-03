@@ -1,34 +1,39 @@
-import React from 'react';
-//import Icon from './icono.jpg';
+"use client" 
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+//import NavDropdown from 'react-bootstrap/NavDropdown';
+import { useRouter } from 'next/navigation';
 import './navbar.css';
+
 function NavBar() {
+  const router = useRouter();
   return (
-    <div>
-      <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
-            <div className="container-fluid">
-                <a className="navbar-brand" href="#"> <i className='bx bxs-user-rectangle bx-lg' ></i></a>
-               
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-                <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="collapsibleNavbar">
-                <ul className="navbar-nav">
-                    <li className="nav-item btn btn-outline-success">
-                        <a className="nav-link" href="#">Editar Perfil</a>
-                    </li>
-                    <br/>
-                    <li className="nav-item btn btn-outline-danger">
-                        <a className="nav-link" href="/">Salir</a>
-                    </li>
-                    {/* <li className="nav-item">
-                    <a className="nav-link" href="#">Link</a>
-                    </li> */}
-                </ul>
-                </div>
-            </div>
-        </nav>
-    </div>
-  )
+    <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
+      <Container>
+        <Navbar.Brand onClick={() => router.push('/dashboard/home')} > <i className='bx bxs-user-rectangle bx-lg' /></Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+          <Nav.Link onClick={() => router.push('/dashboard/home')} className='btn btn-outline-success' >Principal</Nav.Link>
+            <Nav.Link onClick={() => router.push('/dashboard/editprofile')} className='btn btn-outline-success'>Editar perfil</Nav.Link>
+            <Nav.Link onClick={() => router.push('/')} className='btn btn-outline-danger'>Salir</Nav.Link >
+            {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2">
+                Another action
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href="#action/3.4">
+                Separated link
+              </NavDropdown.Item>
+            </NavDropdown> */}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
 }
 
-export default NavBar
+export default NavBar;

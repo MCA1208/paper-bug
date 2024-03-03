@@ -2,8 +2,11 @@
     color: blue;
 }
 
-li {
+.nav-link {
     margin: 10px;
+    border-style: solid;
+    border-color: green;
+    border: solid;
 }
 
 .btn {
