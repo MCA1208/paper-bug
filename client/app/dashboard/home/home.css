@@ -1,4 +1,4 @@
-.wrapper {
+/* .wrapper {
     width: 1000px;
     background: transparent;
     border: 2px solid  rgba(255, 255, 255, .2);
@@ -7,17 +7,26 @@
     color: #fff;
     border-radius: 10px;
     padding: 30px 40px;
-}
+} */
 
 .body {
-    display: flex;
+    /* display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     background: url(../../img/fondo2.jpg) no-repeat; 
     background-size: cover;
     background-position: center;
-    filter: hue-rotate(245deg);
+    filter: hue-rotate(245deg); */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url(../../img/fondo2.jpg) no-repeat;
+    background-size: cover;
+    background-position: center;
+    filter: hue-rotate(312deg); 
 }
 body{
     display: none;

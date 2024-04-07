@@ -69,7 +69,7 @@ function page() {
         <div>
           <h1>Ingresar</h1>
           <div className='input-box'>
-              <input type='text' placeholder='Usuario' 
+              <input type='text' placeholder='Email' 
               value={email}
               onChange={  e => setEmail(e.target.value) }
               required/>
@@ -83,14 +83,14 @@ function page() {
               required/>
               <i className='bx bxs-lock-alt'></i>
           </div>
-
           <div className='remember-forgot'>
               <label><input type='checkbox'/> Recordar  
               </label>
               <a href='#'>¿Has olvidado tu contraseña?</a>
           </div>
-
-          <button type='submit' onClick={login} className='btn btn btn-primary'>Login</button>
+          <div className='input-box'>
+            <button type='submit' onClick={login} className='btn btn btn-primary'>Login</button>
+          </div>
 
           <div className='register-link'>
               <p>No tengo una cuenta?

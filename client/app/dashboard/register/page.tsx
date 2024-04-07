@@ -158,15 +158,15 @@ function registerPage() {
 
         </form>
           <div className='row'>
-            <div className='col-6'>
-              <button type='submit' className='btn-register btn btn-secondary' 
+            <div className='col-6 text-center'>
+              <button type='submit' className='btn-register btn btn-secondary boxicon' 
               onClick={() => router.push('/')}>
               <i  className='bx bx-arrow-back boxicon'></i>
                   Volver
               </button>
               
             </div>
-            <div className='col-6'>
+            <div className='col-6 text-center'>
               <button type='submit' className='btn-register btn btn-primary boxicon'
                 onClick={createuser}>
                 <i className='bx bxs-user-plus boxicon'></i>

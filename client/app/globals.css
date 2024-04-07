@@ -18,7 +18,7 @@ body {
 }
 
 .wrapper {
-    width: 420px;
+    width: 750px; /*420px; */
     background: transparent;
     border: 2px solid  rgba(255, 255, 255, .2);
     backdrop-filter: blur(20px);
@@ -38,10 +38,11 @@ body {
     width: 100%;
     height: 50px;
     margin: 30px 0;
+    text-align: center;
 }
 
 .input-box input {
-    width: 100%;
+    width: 70%;
     height: 100%;
     background:  transparent;
     border: none;
@@ -59,8 +60,8 @@ body {
 
  .input-box i {
     position: absolute;
-    right: 20px;
-    top: 40%;
+    right: 120px;
+    top: 30%;
     transform: translate(-50%);
     font-size: 20px;
  }
@@ -87,7 +88,7 @@ body {
  }
 
  .wrapper .btn {
-    width: 100%;
+    width: 70%;
     height: 45px;
     /* background: #00c2ff; */
     border: none;
@@ -113,4 +114,9 @@ body {
 
  .register-link p a :hover {
     text-decoration: underline;
+ }
+ .remember-forgot{
+   width: 100%;
+   text-align: center;
+   padding: 20px 102px 20px;
  }
