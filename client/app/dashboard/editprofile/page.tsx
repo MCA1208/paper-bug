@@ -1,7 +1,6 @@
 'use client';
 import React from 'react'
 import NavBar from '../navbar/NavBar';
-import '../../globals.css';
 import  { useState } from 'react';
 import Swal from 'sweetalert2';
 

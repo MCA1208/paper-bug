@@ -1,6 +1,10 @@
+'use client';
+
 import React from 'react';
 import NavBar from '../navbar/NavBar'
-import './home.css';
+import '../../globals.css';
+
+
 
 function page() {
   return (
@@ -9,17 +13,29 @@ function page() {
             <div className='body'>
                 <div className='wrapper'>
                     <form>
-                    <h1>Registrarse</h1>
-                    dfsdf
-                    <h1>Registrarse</h1>
-             
+                    <h1>Seguimientos de envío</h1>
+                      <div className='input-box'>
+                          <input type='password' placeholder='Contraseña'                  
+                              value=""
+                              required/>
+                          <i className='bx bxs-lock-open'></i>
+                      </div>
 
-                    sdf
-                    sdfsd
-                    fds
-                    fsd
-                    fsd
-                    fsd
+                      <div className='input-box'>
+                          <input type='password' placeholder='Repetir Contraseña' 
+                              value=""
+                              required/>              
+                          <i className='bx bxs-lock'></i>
+                      </div>  
+                      <div className='input-box'>
+                          <input type='password' placeholder='Repetir Contraseña' 
+                              value=""
+                              required/>              
+                          <i className='bx bxs-lock'></i>
+                      </div>  
+
+ 
+                                   
                 
                     </form>
             </div>  

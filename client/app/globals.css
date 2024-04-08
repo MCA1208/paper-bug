@@ -26,11 +26,20 @@ body {
     color: #fff;
     border-radius: 10px;
     padding: 30px 40px;
+    min-height: 82vh;
 }
 
 .wrapper h1 {
     font-size: 36px;
     text-align: center;    
+}
+
+.wrapper h2 {
+   font-size: 26px;
+   text-align: center;   
+   color: #158FFA;
+   border-radius: 10px;
+   border: 2px solid  rgba(255, 255, 255, .2);
 }
 
 .wrapper .input-box {
