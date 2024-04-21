@@ -61,7 +61,6 @@ function page() {
     const country = {};
     dictionary.countries.map((row) => (country[row.id] = row.title));
     setCountry(country);
-    console.log(sessionStorage.email);
   }, []);
 
   const handleRowDelete = (rowData) => {
@@ -84,7 +83,7 @@ function page() {
         variant="h5"
         sx={{ fontWeight: "bold", textAlign: "center" }}
       >
-        CLIENTES
+        ENVÍOS
       </Typography>
       <MaterialTable
         columns={columns}

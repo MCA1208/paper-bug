@@ -45,7 +45,11 @@ function NavBar() {
               >
                 Clientes
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Envíos</NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => router.push("/dashboard/sending")}
+              >
+                Envíos
+              </NavDropdown.Item>
               {/* <NavDropdown.Item href="#action/3.3">
                 No disponible
               </NavDropdown.Item>

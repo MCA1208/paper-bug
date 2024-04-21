@@ -37,6 +37,8 @@ function page() {
       .then((response) => response.json())
       .then((data) => {
         if (data.result.status == true) {
+          sessionStorage.setItem("id", data.result.data[0].id);
+          sessionStorage.setItem("email", data.result.data[0].email);
           router.push("/dashboard/home");
         } else {
           Swal.fire({

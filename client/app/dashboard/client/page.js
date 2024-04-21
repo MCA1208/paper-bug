@@ -92,16 +92,13 @@ function page() {
         editable={{
           onRowAdd: (newRow) =>
             new Promise((resolve, reject) => {
-              setTableData([...tableData, newRow]);
-
-              setTimeout(() => resolve(), 500);
+              resolve(setTableData([...tableData, newRow]));
             }),
           onRowUpdate: (newRow, oldRow) =>
             new Promise((resolve, reject) => {
               const updatedData = [...tableData];
               updatedData[oldRow.tableData.id] = newRow;
-              setTableData(updatedData);
-              setTimeout(() => resolve(), 500);
+              resolve(setTableData(updatedData));
             }),
         }}
         actions={[
