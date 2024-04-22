@@ -17,6 +17,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import "../../globals.css";
 
 function page() {
   const dataEspecialist = [
@@ -99,7 +100,13 @@ function page() {
           <Typography
             component="h5"
             variant="h5"
-            sx={{ fontWeight: "bold", textAlign: "center" }}
+            sx={{
+              fontWeight: "bold",
+              textAlign: "center",
+              color: "white",
+              backgroundColor: "black",
+              borderRadius: "10px",
+            }}
           >
             USUARIO
           </Typography>

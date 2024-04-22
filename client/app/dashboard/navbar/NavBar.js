@@ -5,6 +5,8 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useRouter } from "next/navigation";
 import "./navbar.css";
+import Logo from "./descarga.png";
+import Image from "next/image";
 
 function NavBar() {
   const router = useRouter();
@@ -17,8 +19,8 @@ function NavBar() {
     >
       <Container>
         <Navbar.Brand onClick={() => router.push("/dashboard/home")}>
-          {" "}
-          <i className="bx bxs-user-rectangle bx-lg" />
+          <Image src={Logo} width={50} height={50} />{" "}
+          {/* <i className="bx bxs-user-rectangle bx-lg" /> */}
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -50,13 +52,15 @@ function NavBar() {
               >
                 Envíos
               </NavDropdown.Item>
-              {/* <NavDropdown.Item href="#action/3.3">
-                No disponible
+              <NavDropdown.Item
+                onClick={() => router.push("/dashboard/supplier")}
+              >
+                Proveedor
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                No disponible
-              </NavDropdown.Item> */}
+              <NavDropdown.Item onClick={() => router.push("/dashboard/user")}>
+                Usuarios
+              </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link
               onClick={() => router.push("/")}

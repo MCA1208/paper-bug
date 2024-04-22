@@ -57,7 +57,7 @@ function page() {
     <body>
       <div className="wrapper">
         <div>
-          <h2>Shipping Tracking</h2>
+          <h2>SHIPPING TRACKING</h2>
           <h1>Ingresar</h1>
           <div className="input-box">
             <input

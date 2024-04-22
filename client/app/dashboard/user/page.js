@@ -62,7 +62,6 @@ function page() {
     const country = {};
     dictionary.countries.map((row) => (country[row.id] = row.title));
     setCountry(country);
-    console.log(sessionStorage.email);
   }, []);
 
   const handleRowDelete = (rowData) => {
@@ -91,7 +90,7 @@ function page() {
           borderRadius: "10px",
         }}
       >
-        CLIENTES
+        USUARIOS
       </Typography>
       <MaterialTable
         columns={columns}
@@ -121,8 +120,6 @@ function page() {
           addRowPosition: "first",
         }}
       />
-
-      <DeleteIcon />
     </Container>
   );
 }

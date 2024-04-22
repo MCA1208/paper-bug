@@ -7,6 +7,7 @@ import Container from "@mui/material/Container";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { dictionary } from "../../constants/dictionary";
 import { Typography } from "@mui/material";
+import "../../globals.css";
 
 function page() {
   const [country, setCountry] = useState();
@@ -81,7 +82,13 @@ function page() {
       <Typography
         component="h5"
         variant="h5"
-        sx={{ fontWeight: "bold", textAlign: "center" }}
+        sx={{
+          fontWeight: "bold",
+          textAlign: "center",
+          color: "white",
+          backgroundColor: "black",
+          borderRadius: "10px",
+        }}
       >
         CLIENTES
       </Typography>
@@ -113,8 +120,6 @@ function page() {
           addRowPosition: "first",
         }}
       />
-
-      <DeleteIcon />
     </Container>
   );
 }

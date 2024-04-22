@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../navbar/NavBar";
 import MaterialTable from "@material-table/core";
-import Container from "@mui/material/Container";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { dictionary } from "../../constants/dictionary";
-import { Typography } from "@mui/material";
+import { Typography, Container } from "@mui/material";
 import "../../globals.css";
 
 function page() {
@@ -62,7 +61,6 @@ function page() {
     const country = {};
     dictionary.countries.map((row) => (country[row.id] = row.title));
     setCountry(country);
-    console.log(sessionStorage.email);
   }, []);
 
   const handleRowDelete = (rowData) => {
@@ -91,7 +89,7 @@ function page() {
           borderRadius: "10px",
         }}
       >
-        CLIENTES
+        PROVEEDOR
       </Typography>
       <MaterialTable
         columns={columns}
@@ -121,8 +119,6 @@ function page() {
           addRowPosition: "first",
         }}
       />
-
-      <DeleteIcon />
     </Container>
   );
 }

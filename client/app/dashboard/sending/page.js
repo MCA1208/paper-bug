@@ -81,7 +81,13 @@ function page() {
       <Typography
         component="h5"
         variant="h5"
-        sx={{ fontWeight: "bold", textAlign: "center" }}
+        sx={{
+          fontWeight: "bold",
+          textAlign: "center",
+          color: "white",
+          backgroundColor: "black",
+          borderRadius: "10px",
+        }}
       >
         ENVÍOS
       </Typography>
@@ -113,8 +119,6 @@ function page() {
           addRowPosition: "first",
         }}
       />
-
-      <DeleteIcon />
     </Container>
   );
 }

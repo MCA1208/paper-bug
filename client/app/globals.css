@@ -10,16 +10,19 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: url(./img/fondo2.jpg) no-repeat;
+  background: url(./img/logistica.jpg) no-repeat;
   background-size: cover;
   background-position: center;
+}
+image {
+  filter: hue-rotate(245deg);
 }
 
 .wrapper {
   width: 750px; /*420px; */
   background: transparent;
   border: 2px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px); /*blur(20px);*/
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   color: #fff;
   border-radius: 10px;
@@ -33,11 +36,13 @@ body {
 }
 
 .wrapper h2 {
-  font-size: 26px;
+  font-size: 35px;
   text-align: center;
-  color: #158ffa;
+  color: #98cfff;
   border-radius: 10px;
   border: 2px solid rgba(255, 255, 255, 0.2);
+  font-weight: bold;
+  background: black;
 }
 
 .wrapper .input-box {
