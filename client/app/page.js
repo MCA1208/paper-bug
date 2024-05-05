@@ -2,29 +2,17 @@
 import React, { useEffect, useState } from "react";
 import "./globals.css";
 import Swal from "sweetalert2";
-//import { redirect } from 'next/dist/server/api-utils';
-//import { redirect } from 'next/navigation';
 import { useRouter } from "next/navigation";
+import { CircularProgress, Backdrop } from "@mui/material";
 
 function page() {
-  //onst [message, setMessage] = useState("Loading");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [progress, setProgress] = useState(false);
   const router = useRouter();
 
-  // useEffect(()=>{
-  //   fetch("http://localhost:8080/users").then(
-  //     response => response.json()
-  //   ).then(
-  //     data =>{
-  //       console.log(`ver json  client::: ${JSON.stringify(data)}`);
-  //       setMessage(data);
-  //       //setPeople(data.people);
-  //     }
-  //   )
-  // }, [])
-
-  const login = () => {
+  const login = async () => {
+    handleProcess(true);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -33,7 +21,7 @@ function page() {
 
     console.log(requestOptions);
 
-    fetch("http://localhost:8080/login", requestOptions)
+    await fetch("http://localhost:8080/login", requestOptions)
       .then((response) => response.json())
       .then((data) => {
         if (data.result.status == true) {
@@ -48,12 +36,25 @@ function page() {
             confirmButtonText: "Cerrar",
             timer: 3000,
           });
+          handleProcess(false);
         }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          title: "Error!",
+          text: "error en la solicitud" + " " + data.result.data,
+          icon: "error",
+          confirmButtonText: "Cerrar",
+          timer: 3000,
+        });
+        handleProcess(false);
       });
   };
 
+  const handleProcess = (stateProgress) => setProgress(stateProgress);
+
   return (
-    // {JSON.stringify(message)}
     <body>
       <div className="wrapper">
         <div>
@@ -96,7 +97,7 @@ function page() {
             </button>
           </div>
 
-          <div className="register-link">
+          <div className="register-link" style={{ height: 10 }}>
             <p>
               No tengo una cuenta?
               <a href="/dashboard/register"> Registrarse</a>
@@ -104,6 +105,14 @@ function page() {
           </div>
         </div>
       </div>
+      {progress && (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={progress}
+        >
+          {progress && <CircularProgress />}
+        </Backdrop>
+      )}
     </body>
   );
 }
