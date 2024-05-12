@@ -70,7 +70,7 @@ router.post("/createusers", async (req, res) => {
     }
   } catch (error) {
     result.status = false;
-    result.data = JSON.stringify(erro);
+    result.data = JSON.stringify(error);
 
     res.json(result);
   }
@@ -101,9 +101,9 @@ router.post("/login", async (req, res) => {
       result.data = "No coincide la contraseña";
       res.json({ result });
     }
-  } catch (err) {
+  } catch (error) {
     result.status = false;
-    result.data = err.toString();
+    result.data = error.toString();
 
     res.json({ result });
   }

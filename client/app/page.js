@@ -12,7 +12,7 @@ function page() {
   const router = useRouter();
 
   const login = async () => {
-    handleProcess(true);
+    setProgress(true);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -36,7 +36,7 @@ function page() {
             confirmButtonText: "Cerrar",
             timer: 3000,
           });
-          handleProcess(false);
+          setProgress(false);
         }
       })
       .catch((error) => {
@@ -48,11 +48,9 @@ function page() {
           confirmButtonText: "Cerrar",
           timer: 3000,
         });
-        handleProcess(false);
+        setProgress(false);
       });
   };
-
-  const handleProcess = (stateProgress) => setProgress(stateProgress);
 
   return (
     <body>

@@ -5,12 +5,16 @@ import NavBar from "../navbar/NavBar";
 import MaterialTable from "@material-table/core";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { dictionary } from "../../constants/dictionary";
-import { Typography, Container } from "@mui/material";
+import { Typography, Container, Hidden } from "@mui/material";
 import "../../globals.css";
+import Swal from "sweetalert2";
 
 function page() {
   const [country, setCountry] = useState();
+  const [progress, setProgress] = useState(false);
+
   const columns = [
+    { title: "id", field: "id", with: 50, hidden: true },
     { title: "Nombre", field: "name", with: 50 },
     { title: "Rubro", field: "activity", with: 50 },
     { title: "Email", field: "email", with: 50 },
@@ -58,9 +62,10 @@ function page() {
   ]);
 
   useEffect(() => {
-    const country = {};
-    dictionary.countries.map((row) => (country[row.id] = row.title));
-    setCountry(country);
+    // const country = {};
+    // dictionary.countries.map((row) => (country[row.id] = row.title));
+    // setCountry(country);
+    handleCountry();
   }, []);
 
   const handleRowDelete = (rowData) => {
@@ -73,6 +78,92 @@ function page() {
       );
       setTableData(updatedData);
     }
+  };
+
+  const handleRowAdd = async (newRow) => {
+    console.log(`${process.env.NEXT_PUBLIC_URL_API}/createsupplier`);
+    setProgress(true);
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, password: password }),
+    };
+    await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/createsupplier`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result.status == true) {
+          sessionStorage.setItem("id", data.result.data[0].id);
+          sessionStorage.setItem("email", data.result.data[0].email);
+          router.push("/dashboard/home");
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "error al crear el proveedor" + " " + data.result.data,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+            timer: 3000,
+          });
+          setProgress(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          title: "Error!",
+          text: "error en la solicitud" + " " + data.result.data,
+          icon: "error",
+          confirmButtonText: "Cerrar",
+          timer: 3000,
+        });
+        setProgress(false);
+      });
+  };
+
+  const handleRowUpdate = (newRow, oldRow) =>
+    new Promise((resolve, reject) => {
+      const updatedData = [...tableData];
+      updatedData[oldRow.tableData.id] = newRow;
+      resolve(setTableData(updatedData));
+    });
+
+  const handleCountry = async () => {
+    //setProgress(true);
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    };
+    await fetch(`${process.env.NEXT_PUBLIC_URL_API}/getcountry`, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result.status == true) {
+          const country = {};
+          data.result.data.map((row) => (country[row.id] = row.name));
+          setCountry(country);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "error al obtener los paises" + " " + data.result.data,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+            timer: 3000,
+          });
+          //setProgress(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          title: "Error!",
+          text: "error en la solicitud" + " " + data.result.data,
+          icon: "error",
+          confirmButtonText: "Cerrar",
+          timer: 3000,
+        });
+        //setProgress(false);
+      });
   };
 
   return (
@@ -96,16 +187,8 @@ function page() {
         data={tableData}
         title=""
         editable={{
-          onRowAdd: (newRow) =>
-            new Promise((resolve, reject) => {
-              resolve(setTableData([...tableData, newRow]));
-            }),
-          onRowUpdate: (newRow, oldRow) =>
-            new Promise((resolve, reject) => {
-              const updatedData = [...tableData];
-              updatedData[oldRow.tableData.id] = newRow;
-              resolve(setTableData(updatedData));
-            }),
+          onRowAdd: handleRowAdd,
+          onRowUpdate: handleRowUpdate,
         }}
         actions={[
           {
