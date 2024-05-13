@@ -15,56 +15,27 @@ function page() {
 
   const columns = [
     { title: "id", field: "id", with: 50, hidden: true },
-    { title: "Nombre", field: "name", with: 50 },
-    { title: "Rubro", field: "activity", with: 50 },
+    { title: "Nombre", field: "names", with: 50 },
+    { title: "Telefono", field: "telephone", with: 50 },
+    { title: "Rubro", field: "activityid", with: 50 },
     { title: "Email", field: "email", with: 50 },
     {
       title: "País",
-      field: "country",
+      field: "countryid",
       with: 50,
       lookup: country,
     },
-    { title: "Provincia", field: "province", with: 50 },
+    { title: "Provincia", field: "provinceid", with: 50 },
     { title: "Domicilio", field: "address", with: 50 },
     { title: "Detalle", field: "detail", with: 50 },
   ];
-  const [tableData, setTableData] = useState([
-    {
-      id: 0,
-      name: "Milton Cesar Amado",
-      activity: "Venta de computadoras",
-      email: "milton.amado10@gmail.com",
-      country: 1,
-      province: "Buenos aires",
-      address: "Florencio varela calle necochea 3509",
-      detail: "Es un cliente de servicios temporales",
-    },
-    {
-      id: 1,
-      name: "Juan Perez",
-      activity: "Accesorios de autos",
-      email: "milton.amado10@gmail.com",
-      country: 2,
-      province: "Buenos aires",
-      address: "Quilmes calle moreno 22",
-      detail: "renovación contrato  x año",
-    },
-    {
-      id: 2,
-      name: "Carlos Gomez",
-      activity: "Libreria mayorista",
-      email: "milton.amado10@gmail.com",
-      country: 4,
-      province: "Santa Fé",
-      address: "Rosario Garibaldi 44",
-      detail: "contacto es Mario Rodriguez cel 1199968425",
-    },
-  ]);
+  const [tableData, setTableData] = useState();
 
   useEffect(() => {
     // const country = {};
     // dictionary.countries.map((row) => (country[row.id] = row.title));
     // setCountry(country);
+    handleSupplier();
     handleCountry();
   }, []);
 
@@ -86,7 +57,18 @@ function page() {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email, password: password }),
+      body: JSON.stringify({
+        id: newRow.id,
+        name: newRow.name,
+        activityId: newRow.activityId,
+        email: newRow.email,
+        countryId: newRow.countryId,
+        provinceId: newRow.provinceId,
+        address: newRow.address,
+        detail: newRow.address,
+        telephone: newRow.telephone,
+        userId: sessionStorage.getItem("id"),
+      }),
     };
     await fetch(
       `${process.env.NEXT_PUBLIC_URL_API}/createsupplier`,
@@ -104,7 +86,7 @@ function page() {
             text: "error al crear el proveedor" + " " + data.result.data,
             icon: "error",
             confirmButtonText: "Cerrar",
-            timer: 3000,
+            timer: 6000,
           });
           setProgress(false);
         }
@@ -116,7 +98,7 @@ function page() {
           text: "error en la solicitud" + " " + data.result.data,
           icon: "error",
           confirmButtonText: "Cerrar",
-          timer: 3000,
+          timer: 6000,
         });
         setProgress(false);
       });
@@ -163,6 +145,42 @@ function page() {
           timer: 3000,
         });
         //setProgress(false);
+      });
+  };
+  const handleSupplier = async () => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    };
+    await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/getsupplier`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result.status == true) {
+          const supplierList = data.result.data.map((row) => row);
+          console.log(`supplierList: ${supplierList}`);
+          setTableData(supplierList);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "error: " + " " + data.result.data,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+            timer: 3000,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          title: "Error!",
+          text: `error en la solicitud: ${error}`,
+          icon: "error",
+          confirmButtonText: "Cerrar",
+          timer: 3000,
+        });
       });
   };
 
