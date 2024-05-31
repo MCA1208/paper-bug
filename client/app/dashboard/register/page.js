@@ -92,7 +92,7 @@ function registerPage() {
             showConfirmButton: false,
             timer: 1500
           });
-
+          router.push('/');
         }
         else{
           Swal.fire({

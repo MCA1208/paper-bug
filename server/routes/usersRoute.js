@@ -51,15 +51,15 @@ router.post("/createusers", async (req, res) => {
       result.data = JSON.stringify("El email ingresado esta repetido");
       res.json({ result });
     } else {
+
       const date = new Date();
       const year = date.getFullYear();
       const month = `0${date.getMonth() + 1}`.slice(-2);
       const day = `0${date.getDate()}`.slice(-2);
-
+ 
       const formattedDate = `${year}-${month}-${day}`;
 
       const passwordHash = CryptoJS.SHA1(req.body.password).toString();
-
       const response = await pool.query(
         `insert into users(name, email, password, createDate, active) values ('${req.body.name}','${req.body.email}', '${passwordHash}', '${formattedDate}', true)`
       );
@@ -72,7 +72,7 @@ router.post("/createusers", async (req, res) => {
     result.status = false;
     result.data = JSON.stringify(error);
 
-    res.json(result);
+    res.json({result});
   }
 });
 
