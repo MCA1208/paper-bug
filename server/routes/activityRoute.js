@@ -4,15 +4,18 @@ const pool = require("../conexion/cnn");
 
 //#region  METODOS GET
 router.post("/getactivity", async (req, res) => {
+  let result = { status: true, data: "" };
   try {
     const response = await pool.query("SELECT * FROM activity");
 
-    res.json(response);
+    result.data = response.rows;
+
+    res.json({ result });
   } catch (error) {
     result.status = false;
     result.data = JSON.stringify(error);
 
-    res.json(result);
+    res.json({ result });
   }
 });
 //#endregion

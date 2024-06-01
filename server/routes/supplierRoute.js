@@ -22,25 +22,32 @@ router.post("/getsupplier", async (req, res) => {
 
 router.post("/createsupplier", async (req, res) => {
   let result = { status: true, data: "" };
+  
   console.log(
     `entro supplier: ${JSON.stringify(
       req.body
     )} ${new Date().toLocaleDateString()} `
   );
   try {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = `0${date.getMonth() + 1}`.slice(-2);
+    const day = `0${date.getDate()}`.slice(-2);
+
+    const formattedDate = `${year}-${month}-${day}`;
+  
     const response = await pool.query(
-      `insert into supplier(names, activityid, email, countryid, provinceid, address, detail, 
+      `insert into supplier(name, activityid, email, countryid, address, detail, 
         telephone, active, userid, modifydate) 
             values 
-            ('${req.body.name}','${req.body.activityId}','${
-        req.body.email
-      }', '${req.body.countryId}', '${req.body.provinceId}',
+            ('${req.body.name}','${req.body.activityid}','${
+        req.body.email}', '${req.body.countryid}', 
             '${req.body.address}','${req.body.detail}', '${
         req.body.telephone
-      }', ${true},' ${req.body.userId}', '${new Date().toLocaleDateString()}')`
+      }', true,' ${req.body.userId}', '${formattedDate}')`
     );
 
-    result.data = JSON.stringify(response);
+    result.data = "Se creó con exito";
 
     res.json({ result });
   } catch (error) {

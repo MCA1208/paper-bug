@@ -5,19 +5,25 @@ import NavBar from "../navbar/NavBar";
 import MaterialTable from "@material-table/core";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { dictionary } from "../../constants/dictionary";
-import { Typography, Container, Hidden } from "@mui/material";
+import { Typography, Container, Select, MenuItem } from "@mui/material";
 import "../../globals.css";
 import Swal from "sweetalert2";
 
 function page() {
   const [country, setCountry] = useState();
+  const [province, setProvince] = useState();
+  const [activity, setActivity] = useState();
   const [progress, setProgress] = useState(false);
+
+  const getCities = (country) => {
+    return province[country] ?? [];
+  };
 
   const columns = [
     { title: "id", field: "id", with: 50, hidden: true },
-    { title: "Nombre", field: "names", with: 50 },
+    { title: "Nombre", field: "name", with: 50 },
     { title: "Telefono", field: "telephone", with: 50 },
-    { title: "Rubro", field: "activityid", with: 50 },
+    { title: "Rubro", field: "activityid", with: 50, lookup: activity },
     { title: "Email", field: "email", with: 50 },
     {
       title: "País",
@@ -25,18 +31,21 @@ function page() {
       with: 50,
       lookup: country,
     },
-    { title: "Provincia", field: "provinceid", with: 50 },
+    // {
+    //   title: "Provincia",
+    //   field: "provinceid",
+    //   with: 50
+    // },
     { title: "Domicilio", field: "address", with: 50 },
     { title: "Detalle", field: "detail", with: 50 },
   ];
   const [tableData, setTableData] = useState();
 
   useEffect(() => {
-    // const country = {};
-    // dictionary.countries.map((row) => (country[row.id] = row.title));
-    // setCountry(country);
+    handleActivity();
     handleSupplier();
     handleCountry();
+    //handleProvince();
   }, []);
 
   const handleRowDelete = (rowData) => {
@@ -60,12 +69,11 @@ function page() {
       body: JSON.stringify({
         id: newRow.id,
         name: newRow.name,
-        activityId: newRow.activityId,
+        activityid: newRow.activityid,
         email: newRow.email,
-        countryId: newRow.countryId,
-        provinceId: newRow.provinceId,
+        countryid: newRow.countryid,
         address: newRow.address,
-        detail: newRow.address,
+        detail: newRow.detail,
         telephone: newRow.telephone,
         userId: sessionStorage.getItem("id"),
       }),
@@ -77,9 +85,14 @@ function page() {
       .then((response) => response.json())
       .then((data) => {
         if (data.result.status == true) {
-          sessionStorage.setItem("id", data.result.data[0].id);
-          sessionStorage.setItem("email", data.result.data[0].email);
-          router.push("/dashboard/home");
+          Swal.fire({
+            icon: "success",
+            title: "Se creó el proveedor con éxito!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          handleSupplier();
+          //window.location.reload();
         } else {
           Swal.fire({
             title: "Error!",
@@ -111,6 +124,44 @@ function page() {
       resolve(setTableData(updatedData));
     });
 
+  const handleActivity = async () => {
+    //setProgress(true);
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    };
+    await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/getactivity`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result.status == true) {
+          const activity = {};
+          data.result.data.map((row) => (activity[row.id] = row.name));
+          setActivity(activity);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "error al obtener las actividades" + " " + data.result.data,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+            timer: 3000,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          title: "Error!",
+          text: "error en la solicitud" + " " + data.result.data,
+          icon: "error",
+          confirmButtonText: "Cerrar",
+          timer: 3000,
+        });
+      });
+  };
+
   const handleCountry = async () => {
     //setProgress(true);
     const requestOptions = {
@@ -132,7 +183,6 @@ function page() {
             confirmButtonText: "Cerrar",
             timer: 3000,
           });
-          //setProgress(false);
         }
       })
       .catch((error) => {
@@ -144,9 +194,47 @@ function page() {
           confirmButtonText: "Cerrar",
           timer: 3000,
         });
-        //setProgress(false);
       });
   };
+
+  const handleProvince = async (countryid) => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ countryid: countryid }),
+    };
+    await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/getprovince`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result.status == true) {
+          const province = {};
+          data.result.data.map((row) => (province[row.id] = row.name));
+          setProvince(province);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "error al obtener las provincias" + " " + data.result.data,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+            timer: 3000,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          title: "Error!",
+          text: "error en la solicitud" + " " + data.result.data,
+          icon: "error",
+          confirmButtonText: "Cerrar",
+          timer: 3000,
+        });
+      });
+  };
+
   const handleSupplier = async () => {
     const requestOptions = {
       method: "POST",

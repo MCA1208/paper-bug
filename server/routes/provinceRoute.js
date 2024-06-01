@@ -4,15 +4,16 @@ const pool = require("../conexion/cnn");
 
 //#region  METODOS POST
 router.post("/getprovince", async (req, res) => {
+  let result = { status: true, data: "" };
   try {
-    const response = await pool.query("SELECT * FROM province");
-
-    res.json(response);
+    const response = await pool.query(`SELECT * FROM province where countryid ='${req.body.countryid}'`);
+    result.data = response.rows;
+    res.json({ result });
   } catch (error) {
     result.status = false;
     result.data = JSON.stringify(error);
 
-    res.json(result);
+    res.json({ result });
   }
 });
 //#endregion
