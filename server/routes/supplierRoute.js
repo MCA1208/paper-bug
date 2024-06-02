@@ -22,7 +22,7 @@ router.post("/getsupplier", async (req, res) => {
 
 router.post("/createsupplier", async (req, res) => {
   let result = { status: true, data: "" };
-  
+
   console.log(
     `entro supplier: ${JSON.stringify(
       req.body
@@ -35,16 +35,13 @@ router.post("/createsupplier", async (req, res) => {
     const day = `0${date.getDate()}`.slice(-2);
 
     const formattedDate = `${year}-${month}-${day}`;
-  
+
     const response = await pool.query(
       `insert into supplier(name, activityid, email, countryid, address, detail, 
         telephone, active, userid, modifydate) 
             values 
-            ('${req.body.name}','${req.body.activityid}','${
-        req.body.email}', '${req.body.countryid}', 
-            '${req.body.address}','${req.body.detail}', '${
-        req.body.telephone
-      }', true,' ${req.body.userId}', '${formattedDate}')`
+            ('${req.body.name}','${req.body.activityid}','${req.body.email}', '${req.body.countryid}', 
+            '${req.body.address}','${req.body.detail}', '${req.body.telephone}', true,' ${req.body.userId}', '${formattedDate}')`
     );
 
     result.data = "Se creó con exito";
@@ -62,37 +59,54 @@ router.put("/modifysupplier", async (req, res) => {
   let result = { status: true, data: "" };
 
   try {
-    const response = await pool.query(
-      `update supplier set name = '${req.body.name}', activityId = '${req.body.activityId}', email = '${req.body.email}', countryId ='${req.body.countryId}', provinceId = ${req.body.provinceId}, 
-            address ='${req.body.address}', detail = '${req.body.detail}',
-            telephone, active, userId, modifyDate)`
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = `0${date.getMonth() + 1}`.slice(-2);
+    const day = `0${date.getDate()}`.slice(-2);
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    console.log(
+      JSON.stringify(
+        `update supplier set name = '${req.body.name}', activityid = ${req.body.activityId}, email = '${req.body.email}', countryid =${req.body.countryid},  address ='${req.body.address}', detail = '${req.body.detail}',  telephone ='${req.body.telephone}', active = true, userid = ${req.body.userId}, modifydate= '${formattedDate}' where id = ${req.body.id}`
+      )
     );
 
-    result.data = JSON.stringify(response);
+    const response = await pool.query(
+      `update supplier set name = '${req.body.name}', activityid = ${req.body.activityId}, email = '${req.body.email}', countryid =${req.body.countryId},  address ='${req.body.address}', detail = '${req.body.detail}',  telephone ='${req.body.telephone}', active = true, userid = ${req.body.userId}, modifydate= '${formattedDate}' where id = ${req.body.id}`
+    );
+
+    result.data = JSON.stringify("Actualización exitosa");
 
     res.json({ result });
   } catch (error) {
     result.status = false;
     result.data = JSON.stringify(error);
 
-    res.json(result);
+    res.json({ result });
   }
 });
 
-router.delete("/deletesupplier", async (req, res) => {
+router.put("/deletesupplier", async (req, res) => {
   let result = { status: true, data: "" };
 
   try {
-    const response = await pool.query(
-      `delete supplier where id = ${req.body.id}`
-    );
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = `0${date.getMonth() + 1}`.slice(-2);
+    const day = `0${date.getDate()}`.slice(-2);
 
+    const formattedDate = `${year}-${month}-${day}`;
+    const response = await pool.query(
+      `update supplier set active = false, userid = ${req.body.userId}, modifydate= '${formattedDate}'  where id = ${req.body.id}`
+    );
+    result.data = JSON.stringify("Actualización exitosa");
     res.json({ result });
   } catch (error) {
     result.status = false;
     result.data = JSON.stringify(error);
 
-    res.json(result);
+    res.json({ result });
   }
 });
 

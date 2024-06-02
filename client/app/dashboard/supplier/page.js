@@ -48,16 +48,74 @@ function page() {
     //handleProvince();
   }, []);
 
+  // const handleRowDelete = (rowData) => {
+  //   if (confirm(dictionary.messageConfirmDelete)) {
+  //     const deletedIds = Array.isArray(rowData)
+  //       ? rowData.map((row) => row.id)
+  //       : [rowData.id];
+  //     const updatedData = tableData.filter(
+  //       (row) => !deletedIds.includes(row.id)
+  //     );
+  //     setTableData(updatedData);
+  //   }
+  // };
+
   const handleRowDelete = (rowData) => {
-    if (confirm(dictionary.messageConfirmDelete)) {
-      const deletedIds = Array.isArray(rowData)
-        ? rowData.map((row) => row.id)
-        : [rowData.id];
-      const updatedData = tableData.filter(
-        (row) => !deletedIds.includes(row.id)
-      );
-      setTableData(updatedData);
-    }
+    Swal.fire({
+      title: "Confirma eliminar?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Eliminar",
+      denyButtonText: `No eliminar`,
+    }).then(async (result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        const requestOptions = {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: rowData.id,
+            userId: sessionStorage.getItem("id"),
+          }),
+        };
+        await fetch(
+          `${process.env.NEXT_PUBLIC_URL_API}/deletesupplier`,
+          requestOptions
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.result.status == true) {
+              Swal.fire({
+                icon: "success",
+                title: "Se eliminó el proveedor con éxito!",
+                showConfirmButton: false,
+                timer: 6000,
+              });
+              handleSupplier();
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: "error al crear el proveedor" + " " + data.result.data,
+                icon: "error",
+                confirmButtonText: "Cerrar",
+                timer: 6000,
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            Swal.fire({
+              title: "Error!",
+              text: "error en la solicitud" + " " + data.result.data,
+              icon: "error",
+              confirmButtonText: "Cerrar",
+              timer: 6000,
+            });
+          });
+      } else if (result.isDenied) {
+        Swal.fire("No se guardo los cambios", "", "info");
+      }
+    });
   };
 
   const handleRowAdd = async (newRow) => {
@@ -92,7 +150,6 @@ function page() {
             timer: 1500,
           });
           handleSupplier();
-          //window.location.reload();
         } else {
           Swal.fire({
             title: "Error!",
@@ -117,15 +174,68 @@ function page() {
       });
   };
 
-  const handleRowUpdate = (newRow, oldRow) =>
-    new Promise((resolve, reject) => {
-      const updatedData = [...tableData];
-      updatedData[oldRow.tableData.id] = newRow;
-      resolve(setTableData(updatedData));
-    });
+  // const handleRowUpdate = (newRow, oldRow) =>
+  //   new Promise((resolve, reject) => {
+  //     const updatedData = [...tableData];
+  //     updatedData[oldRow.tableData.id] = newRow;
+  //     resolve(setTableData(updatedData));
+  //   });
+
+  const handleRowUpdate = async (newRow, oldRow) => {
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: newRow.id,
+        name: newRow.name,
+        activityId: newRow.activityid,
+        email: newRow.email,
+        countryId: newRow.countryid,
+        address: newRow.address,
+        detail: newRow.detail,
+        telephone: newRow.telephone,
+        userId: sessionStorage.getItem("id"),
+      }),
+    };
+    await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/modifysupplier`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result.status == true) {
+          Swal.fire({
+            icon: "success",
+            title: "Se actualizó el proveedor con éxito!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          handleSupplier();
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "error al crear el proveedor" + " " + data.result.data,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+            timer: 6000,
+          });
+          setProgress(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          title: "Error!",
+          text: "error en la solicitud" + " " + data.result.data,
+          icon: "error",
+          confirmButtonText: "Cerrar",
+          timer: 6000,
+        });
+        setProgress(false);
+      });
+  };
 
   const handleActivity = async () => {
-    //setProgress(true);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -163,7 +273,6 @@ function page() {
   };
 
   const handleCountry = async () => {
-    //setProgress(true);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
