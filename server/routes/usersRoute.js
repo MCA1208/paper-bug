@@ -13,7 +13,24 @@ const decryp = (data, key) => {
   return wA.toString(CryptoJS.enc.Utf8);
 };
 
-router.get("/users", getUsers);
+//router.get("/users", getUsers);
+router.post("/getusers", async (req, res) => {
+  let result = { status: true, data: "" };
+
+  try {
+    const response = await pool.query(
+      `select * from users where active = true`
+    );
+    result.data = response.rows;
+
+    res.json({ result });
+  } catch (error) {
+    result.status = false;
+    result.data = JSON.stringify(error);
+
+    res.json({ result });
+  }
+});
 
 router.get("/users/:id", async (req, res) => {
   const response = await pool.query("SELECT * FROM user");
@@ -51,20 +68,20 @@ router.post("/createusers", async (req, res) => {
       result.data = JSON.stringify("El email ingresado esta repetido");
       res.json({ result });
     } else {
-
       const date = new Date();
       const year = date.getFullYear();
       const month = `0${date.getMonth() + 1}`.slice(-2);
       const day = `0${date.getDate()}`.slice(-2);
- 
+
       const formattedDate = `${year}-${month}-${day}`;
 
       const passwordHash = CryptoJS.SHA1(req.body.password).toString();
+
       const response = await pool.query(
-        `insert into users(name, email, password, createDate, active) values ('${req.body.name}','${req.body.email}', '${passwordHash}', '${formattedDate}', true)`
+        `insert into users(name, email, password, modifydate, modifyuserid, active, usertypeid, isadmin) values ('${req.body.name}','${req.body.email}', '${passwordHash}', '${formattedDate}', ${req.body.userId},true, ${req.body.userTypeId}, ${req.body.isAdmin})`
       );
 
-      result.data = JSON.stringify(response);
+      result.data = JSON.stringify("OK");
 
       res.json({ result });
     }
@@ -72,7 +89,7 @@ router.post("/createusers", async (req, res) => {
     result.status = false;
     result.data = JSON.stringify(error);
 
-    res.json({result});
+    res.json({ result });
   }
 });
 
@@ -104,6 +121,55 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     result.status = false;
     result.data = error.toString();
+
+    res.json({ result });
+  }
+});
+
+router.put("/modifyuser", async (req, res) => {
+  let result = { status: true, data: "" };
+
+  try {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = `0${date.getMonth() + 1}`.slice(-2);
+    const day = `0${date.getDate()}`.slice(-2);
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    const response = await pool.query(
+      `update users set name = '${req.body.name}', email = '${req.body.email}', isadmin =${req.body.isAdmin},  password = '${req.body.password}', modifyuserid = ${req.body.userId}, modifydate= '${formattedDate}', usertypeid = ${req.body.userTypeId} where id = ${req.body.id}`
+    );
+
+    result.data = JSON.stringify("OK");
+
+    res.json({ result });
+  } catch (error) {
+    result.status = false;
+    result.data = JSON.stringify(error);
+
+    res.json({ result });
+  }
+});
+
+router.put("/deleteuser", async (req, res) => {
+  let result = { status: true, data: "" };
+
+  try {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = `0${date.getMonth() + 1}`.slice(-2);
+    const day = `0${date.getDate()}`.slice(-2);
+
+    const formattedDate = `${year}-${month}-${day}`;
+    const response = await pool.query(
+      `update users set active = false, modifyuserid = ${req.body.userId}, modifydate= '${formattedDate}'  where id = ${req.body.id}`
+    );
+    result.data = JSON.stringify("OK");
+    res.json({ result });
+  } catch (error) {
+    result.status = false;
+    result.data = JSON.stringify(error);
 
     res.json({ result });
   }

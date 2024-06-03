@@ -58,8 +58,10 @@ function NavBar() {
                 Proveedor
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item onClick={() => router.push("/dashboard/user")}>
-                Usuarios
+              <NavDropdown.Item
+                onClick={() => router.push("/dashboard/usersupplier")}
+              >
+                Usuarios Proveedor
               </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link

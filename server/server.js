@@ -16,6 +16,7 @@ app.use(require("./routes/supplierRoute"));
 app.use(require("./routes/countryRoute"));
 app.use(require("./routes/provinceRoute"));
 app.use(require("./routes/activityRoute"));
+app.use(require("./routes/clientRoute"));
 
 app.get("/api/home", (req, res) => {
   res.json({ message: "Like this video!", people: ["Harry", "Jack", "barry"] });

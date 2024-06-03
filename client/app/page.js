@@ -57,6 +57,7 @@ function page() {
       <div className="wrapper">
         <div>
           <h2>SHIPPING TRACKING</h2>
+          <br></br>
           <h1>Ingresar</h1>
           <div className="input-box">
             <input
@@ -95,12 +96,12 @@ function page() {
             </button>
           </div>
 
-          <div className="register-link" style={{ height: 10 }}>
+          {/* <div className="register-link" style={{ height: 10 }}>
             <p>
               No tengo una cuenta?
               <a href="/dashboard/register"> Registrarse</a>
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
       {progress && (
