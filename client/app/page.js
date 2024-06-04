@@ -6,10 +6,11 @@ import { useRouter } from "next/navigation";
 import { CircularProgress, Backdrop } from "@mui/material";
 
 function page() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [progress, setProgress] = useState(false);
-  const router = useRouter();
+  const [inputType, setInputType] = useState("password");
 
   const login = async () => {
     setProgress(true);
@@ -27,6 +28,7 @@ function page() {
         if (data.result.status == true) {
           sessionStorage.setItem("id", data.result.data[0].id);
           sessionStorage.setItem("email", data.result.data[0].email);
+          sessionStorage.setItem("name", data.result.data[0].name);
           router.push("/dashboard/home");
         } else {
           Swal.fire({
@@ -52,6 +54,10 @@ function page() {
       });
   };
 
+  const showPassword = () => {
+    setInputType(inputType === "password" ? "text" : "password");
+  };
+
   return (
     <body>
       <div className="wrapper">
@@ -72,7 +78,7 @@ function page() {
 
           <div className="input-box">
             <input
-              type="password"
+              type={inputType}
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -82,7 +88,8 @@ function page() {
           </div>
           <div className="remember-forgot">
             <label>
-              <input type="checkbox" /> Recordar
+              <input onClick={showPassword} type="checkbox" /> Mostrar
+              contraseña
             </label>
             <a href="#">¿Has olvidado tu contraseña?</a>
           </div>

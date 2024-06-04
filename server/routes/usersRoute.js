@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const router = Router();
 const pool = require("../conexion/cnn");
-const { getUsers } = require("../service/service");
+// const { getUsers } = require("../service/service");
 const CryptoJS = require("crypto-js");
 
 const encryp = (data, key) => {
@@ -13,13 +13,13 @@ const decryp = (data, key) => {
   return wA.toString(CryptoJS.enc.Utf8);
 };
 
-//router.get("/users", getUsers);
+//#region USUARIOS PROVEEDOR
 router.post("/getusers", async (req, res) => {
   let result = { status: true, data: "" };
 
   try {
     const response = await pool.query(
-      `select * from users where active = true`
+      `select * from users where active = true and usertypeid = 1`
     );
     result.data = response.rows;
 
@@ -46,11 +46,6 @@ router.get("/encrip/:password", async (req, res) => {
   const getuserByID = await pool.query(
     `select password from users where email = '${name}'`
   );
-  console.log(`COUNT ${getuserByID.rowCount}`);
-
-  console.log(`encrip ${encrip}`);
-
-  //console.log(`descrip ${decrypted.toString(CryptoJS.enc.Hex)}`);
 
   res.json(req.params.password);
 });
@@ -98,7 +93,7 @@ router.post("/login", async (req, res) => {
 
   try {
     const getuserByID = await pool.query(
-      `select id,email, password from users where email ='${req.body.email}'`
+      `select id, email, name, password from users where email ='${req.body.email}'`
     );
     const passwordHash = CryptoJS.SHA1(req.body.password).toString();
 
@@ -109,6 +104,7 @@ router.post("/login", async (req, res) => {
         {
           id: getuserByID.rows[0]["id"],
           email: getuserByID.rows[0]["email"],
+          name: getuserByID.rows[0]["name"],
         },
       ];
       result.data = dataUser;
@@ -174,5 +170,79 @@ router.put("/deleteuser", async (req, res) => {
     res.json({ result });
   }
 });
+
+//#endregion
+
+//#region USUARIOS CLIENTES
+
+router.post("/getusersclient", async (req, res) => {
+  let result = { status: true, data: "" };
+
+  try {
+    const response = await pool.query(
+      `select * from users 
+      inner join userclient on userclient.userid = users.id
+      where active = true and usertypeid = 2`
+    );
+    result.data = response.rows;
+
+    res.json({ result });
+  } catch (error) {
+    result.status = false;
+    result.data = JSON.stringify(error);
+
+    res.json({ result });
+  }
+});
+
+router.post("/createusersclient", async (req, res) => {
+  let result = { status: true, data: "" };
+
+  try {
+    const getuserByID = await pool.query(
+      `select password from users where email ='${req.body.email}'`
+    );
+
+    if (getuserByID.rowCount > 0) {
+      result.status = false;
+      result.data = JSON.stringify("El email ingresado esta repetido");
+      res.json({ result });
+    } else {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = `0${date.getMonth() + 1}`.slice(-2);
+      const day = `0${date.getDate()}`.slice(-2);
+
+      const formattedDate = `${year}-${month}-${day}`;
+
+      const passwordHash = CryptoJS.SHA1(req.body.password).toString();
+
+      const maxid = await pool.query(`select max(id) from users`);
+
+      const newid = maxid.rows[0]["max"] + 1;
+
+      console.log(JSON.stringify(newid));
+
+      const response = await pool.query(
+        `insert into users(name, email, password, modifydate, modifyuserid, active, usertypeid, isadmin) values ('${req.body.name}','${req.body.email}', '${passwordHash}', '${formattedDate}', ${req.body.userId},true, ${req.body.userTypeId}, false)`
+      );
+
+      const response2 = await pool.query(
+        `insert into userclient(clientid, userid) values (${req.body.clientid},${newid})`
+      );
+
+      result.data = JSON.stringify("OK");
+
+      res.json({ result });
+    }
+  } catch (error) {
+    result.status = false;
+    result.data = JSON.stringify(error);
+
+    res.json({ result });
+  }
+});
+
+//#endregion
 
 module.exports = router;

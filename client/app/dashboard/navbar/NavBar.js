@@ -7,9 +7,20 @@ import { useRouter } from "next/navigation";
 import "./navbar.css";
 import Logo from "./descarga.png";
 import Image from "next/image";
+import { Avatar } from "@mui/material";
 
 function NavBar() {
   const router = useRouter();
+
+  const stringAvatar = (name) => {
+    return {
+      sx: {
+        bgcolor: "#33BEFF",
+      },
+      children: `${name.split(" ")[0][0]}`,
+    };
+  };
+
   return (
     <Navbar
       expand="lg"
@@ -52,16 +63,19 @@ function NavBar() {
               >
                 Envíos
               </NavDropdown.Item>
-              <NavDropdown.Item
+              {/* <NavDropdown.Item
                 onClick={() => router.push("/dashboard/supplier")}
               >
-                Proveedor
-              </NavDropdown.Item>
+                Mis datos proveedor
+              </NavDropdown.Item> */}
               <NavDropdown.Divider />
+              <NavDropdown.Item onClick={() => router.push("/dashboard/user")}>
+                Usuarios
+              </NavDropdown.Item>
               <NavDropdown.Item
-                onClick={() => router.push("/dashboard/usersupplier")}
+                onClick={() => router.push("/dashboard/userclient")}
               >
-                Usuarios Proveedor
+                Usuarios Cliente
               </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link
@@ -72,6 +86,9 @@ function NavBar() {
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
+        <Avatar
+          {...stringAvatar(sessionStorage.getItem("name").toUpperCase())}
+        />
       </Container>
     </Navbar>
   );

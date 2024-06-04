@@ -11,16 +11,14 @@ import Swal from "sweetalert2";
 import { type } from "os";
 import { Password } from "@mui/icons-material";
 import { alignProperty } from "@mui/material/styles/cssUtils";
+import { Placeholder } from "react-bootstrap";
+import usePlaceholder from "react-bootstrap/esm/usePlaceholder";
 
 function page() {
   const [country, setCountry] = useState();
   const [province, setProvince] = useState();
   const [activity, setActivity] = useState();
   const [progress, setProgress] = useState(false);
-
-  const getCities = (country) => {
-    return province[country] ?? [];
-  };
 
   const columns = [
     { title: "id", field: "id", with: 50, hidden: true },
@@ -37,9 +35,10 @@ function page() {
       align: "center",
     },
     {
-      title: "Password",
+      title: "Password (min 6 digitos)",
       field: "password",
       with: 50,
+      usePlaceholder: "dsasd",
       render: (rowData) => <p>{rowData.password.split("").map(() => "*")}</p>,
     },
   ];
@@ -118,7 +117,17 @@ function page() {
         confirmButtonText: "Cerrar",
         timer: 6000,
       });
-      return false;
+      return;
+    }
+    if (newRow.password.length < 6) {
+      Swal.fire({
+        title: "Error!",
+        text: "La contraseña debe tener mas de 6 caracteres",
+        icon: "error",
+        confirmButtonText: "Cerrar",
+        timer: 6000,
+      });
+      return;
     }
 
     setProgress(true);
@@ -269,7 +278,7 @@ function page() {
           borderRadius: "10px",
         }}
       >
-        USUARIOS PROVEEDOR
+        USUARIOS
       </Typography>
       <MaterialTable
         columns={columns}

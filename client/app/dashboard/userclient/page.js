@@ -8,44 +8,37 @@ import { dictionary } from "../../constants/dictionary";
 import { Typography, Container, Select, MenuItem } from "@mui/material";
 import "../../globals.css";
 import Swal from "sweetalert2";
+import { type } from "os";
+import { Password } from "@mui/icons-material";
+import { alignProperty } from "@mui/material/styles/cssUtils";
 
 function page() {
-  const [country, setCountry] = useState();
-  const [province, setProvince] = useState();
-  const [activity, setActivity] = useState();
+  const [client, setClient] = useState();
   const [progress, setProgress] = useState(false);
-
-  const getCities = (country) => {
-    return province[country] ?? [];
-  };
 
   const columns = [
     { title: "id", field: "id", with: 50, hidden: true },
     { title: "Nombre", field: "name", with: 50 },
-    { title: "Telefono", field: "telephone", with: 50 },
-    { title: "Rubro", field: "activityid", with: 50, lookup: activity },
     { title: "Email", field: "email", with: 50 },
     {
-      title: "País",
-      field: "countryid",
+      title: "Cliente",
+      field: "clientid",
       with: 50,
-      lookup: country,
+      lookup: client,
+      align: "center",
     },
-    // {
-    //   title: "Provincia",
-    //   field: "provinceid",
-    //   with: 50
-    // },
-    { title: "Domicilio", field: "address", with: 50 },
-    { title: "Detalle", field: "detail", with: 50 },
+    {
+      title: "Password (min 6 digitos)",
+      field: "password",
+      with: 50,
+      render: (rowData) => <p>{rowData.password.split("").map(() => "*")}</p>,
+    },
   ];
   const [tableData, setTableData] = useState();
 
   useEffect(() => {
-    handleActivity();
-    handleClient();
-    handleCountry();
-    //handleProvince();
+    handleGetUsers();
+    handleClientCboBox();
   }, []);
 
   const handleRowDelete = (rowData) => {
@@ -67,7 +60,7 @@ function page() {
           }),
         };
         await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/deleteclient`,
+          `${process.env.NEXT_PUBLIC_URL_API}/deleteuser`,
           requestOptions
         )
           .then((response) => response.json())
@@ -75,11 +68,11 @@ function page() {
             if (data.result.status == true) {
               Swal.fire({
                 icon: "success",
-                title: "Se eliminó el proveedor con éxito!",
+                title: "Se eliminó el usuario con éxito!",
                 showConfirmButton: false,
                 timer: 3000,
               });
-              handleClient();
+              handleGetUsers();
             } else {
               Swal.fire({
                 title: "Error!",
@@ -107,25 +100,34 @@ function page() {
   };
 
   const handleRowAdd = async (newRow) => {
-    console.log(`${process.env.NEXT_PUBLIC_URL_API}/createsupplier`);
+    var validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+
+    if (!validEmail.test(newRow.email)) {
+      Swal.fire({
+        title: "Error!",
+        text: "El email ingresado es invalido",
+        icon: "error",
+        confirmButtonText: "Cerrar",
+        timer: 6000,
+      });
+      return;
+    }
+
     setProgress(true);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        id: newRow.id,
         name: newRow.name,
-        activityid: newRow.activityid,
         email: newRow.email,
-        countryid: newRow.countryid,
-        address: newRow.address,
-        detail: newRow.detail,
-        telephone: newRow.telephone,
+        password: newRow.password,
+        userTypeId: 2,
+        clientid: newRow.clientid,
         userId: sessionStorage.getItem("id"),
       }),
     };
     await fetch(
-      `${process.env.NEXT_PUBLIC_URL_API}/createclient`,
+      `${process.env.NEXT_PUBLIC_URL_API}/createusersclient`,
       requestOptions
     )
       .then((response) => response.json())
@@ -133,11 +135,11 @@ function page() {
         if (data.result.status == true) {
           Swal.fire({
             icon: "success",
-            title: "Se creó el cliente con éxito!",
+            title: "Se creó el usuario con éxito!",
             showConfirmButton: false,
             timer: 3000,
           });
-          handleClient();
+          handleGetUsers();
         } else {
           Swal.fire({
             title: "Error!",
@@ -169,36 +171,31 @@ function page() {
       body: JSON.stringify({
         id: newRow.id,
         name: newRow.name,
-        activityId: newRow.activityid,
         email: newRow.email,
-        countryId: newRow.countryid,
-        address: newRow.address,
-        detail: newRow.detail,
-        telephone: newRow.telephone,
+        password: newRow.password,
+        userTypeId: 1,
+        isAdmin: newRow.isadmin,
         userId: sessionStorage.getItem("id"),
       }),
     };
-    await fetch(
-      `${process.env.NEXT_PUBLIC_URL_API}/modifyclient`,
-      requestOptions
-    )
+    await fetch(`${process.env.NEXT_PUBLIC_URL_API}/modifyuser`, requestOptions)
       .then((response) => response.json())
       .then((data) => {
         if (data.result.status == true) {
           Swal.fire({
             icon: "success",
-            title: "Se actualizó el cliente con éxito!",
+            title: "Se actualizó el usuario con éxito!",
             showConfirmButton: false,
-            timer: 3000,
+            timer: 6000,
           });
-          handleClient();
+          handleGetUsers();
         } else {
           Swal.fire({
             title: "Error!",
-            text: "error al crear el cliente" + " " + data.result.data,
+            text: "error al modificar el usuario" + " " + data.result.data,
             icon: "error",
             confirmButtonText: "Cerrar",
-            timer: 3000,
+            timer: 6000,
           });
           setProgress(false);
         }
@@ -216,127 +213,20 @@ function page() {
       });
   };
 
-  const handleActivity = async () => {
+  const handleGetUsers = async () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     };
     await fetch(
-      `${process.env.NEXT_PUBLIC_URL_API}/getactivity`,
+      `${process.env.NEXT_PUBLIC_URL_API}/getusersclient`,
       requestOptions
     )
       .then((response) => response.json())
       .then((data) => {
         if (data.result.status == true) {
-          const activity = {};
-          data.result.data.map((row) => (activity[row.id] = row.name));
-          setActivity(activity);
-        } else {
-          Swal.fire({
-            title: "Error!",
-            text: "error al obtener las actividades" + " " + data.result.data,
-            icon: "error",
-            confirmButtonText: "Cerrar",
-            timer: 3000,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire({
-          title: "Error!",
-          text: "error en la solicitud" + " " + data.result.data,
-          icon: "error",
-          confirmButtonText: "Cerrar",
-          timer: 3000,
-        });
-      });
-  };
-
-  const handleCountry = async () => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    };
-    await fetch(`${process.env.NEXT_PUBLIC_URL_API}/getcountry`, requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result.status == true) {
-          const country = {};
-          data.result.data.map((row) => (country[row.id] = row.name));
-          setCountry(country);
-        } else {
-          Swal.fire({
-            title: "Error!",
-            text: "error al obtener los paises" + " " + data.result.data,
-            icon: "error",
-            confirmButtonText: "Cerrar",
-            timer: 3000,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire({
-          title: "Error!",
-          text: "error en la solicitud" + " " + data.result.data,
-          icon: "error",
-          confirmButtonText: "Cerrar",
-          timer: 3000,
-        });
-      });
-  };
-
-  const handleProvince = async (countryid) => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ countryid: countryid }),
-    };
-    await fetch(
-      `${process.env.NEXT_PUBLIC_URL_API}/getprovince`,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result.status == true) {
-          const province = {};
-          data.result.data.map((row) => (province[row.id] = row.name));
-          setProvince(province);
-        } else {
-          Swal.fire({
-            title: "Error!",
-            text: "error al obtener las provincias" + " " + data.result.data,
-            icon: "error",
-            confirmButtonText: "Cerrar",
-            timer: 3000,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire({
-          title: "Error!",
-          text: "error en la solicitud" + " " + data.result.data,
-          icon: "error",
-          confirmButtonText: "Cerrar",
-          timer: 3000,
-        });
-      });
-  };
-
-  const handleClient = async () => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    };
-    await fetch(`${process.env.NEXT_PUBLIC_URL_API}/getclient`, requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result.status == true) {
-          const supplierList = data.result.data.map((row) => row);
-          console.log(`supplierList: ${supplierList}`);
-          setTableData(supplierList);
+          const userList = data.result.data.map((row) => row);
+          setTableData(userList);
         } else {
           Swal.fire({
             title: "Error!",
@@ -359,6 +249,40 @@ function page() {
       });
   };
 
+  const handleClientCboBox = async () => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    };
+    await fetch(`${process.env.NEXT_PUBLIC_URL_API}/getclient`, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result.status == true) {
+          const client = {};
+          data.result.data.map((row) => (client[row.id] = row.name));
+          setClient(client);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "error al obtener los clientes" + " " + data.result.data,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+            timer: 3000,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          title: "Error!",
+          text: "error en la solicitud" + " " + data.result.data,
+          icon: "error",
+          confirmButtonText: "Cerrar",
+          timer: 3000,
+        });
+      });
+  };
+
   return (
     <Container>
       <NavBar />
@@ -373,7 +297,7 @@ function page() {
           borderRadius: "10px",
         }}
       >
-        CLIENTE
+        USUARIOS CLIENTE
       </Typography>
       <MaterialTable
         columns={columns}
