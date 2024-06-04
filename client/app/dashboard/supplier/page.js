@@ -402,19 +402,40 @@ function page() {
         data={tableData}
         title=""
         editable={{
-          onRowAdd: handleRowAdd,
+          // onRowAdd: handleRowAdd,
           onRowUpdate: handleRowUpdate,
         }}
-        actions={[
-          {
-            icon: () => <DeleteIcon />,
-            tooltip: "Delete",
-            onClick: (e, data) => handleRowDelete(data),
-          },
-        ]}
+        // actions={[
+        //   {
+        //     icon: () => <DeleteIcon />,
+        //     tooltip: "Delete",
+        //     onClick: (e, data) => handleRowDelete(data),
+        //   },
+        // ]}
         options={{
           filtering: true,
           addRowPosition: "first",
+        }}
+        localization={{
+          pagination: {
+            lastTooltip: "Última pagina",
+            nextTooltip: "Siguiente página",
+            previousTooltip: "Página anterior",
+            firstTooltip: "Primer página",
+            labelRowsPerPage: "Filas por páginas",
+            labelRows: "Filas",
+          },
+          header: {
+            actions: "Acción",
+          },
+          body: {
+            addTooltip: "Agregar",
+            editTooltip: "Editar",
+          },
+          toolbar: {
+            searchTooltip: "Buscar",
+            searchPlaceholder: "Buscar",
+          },
         }}
       />
     </Container>

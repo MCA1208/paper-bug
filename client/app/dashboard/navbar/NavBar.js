@@ -63,11 +63,11 @@ function NavBar() {
               >
                 Envíos
               </NavDropdown.Item>
-              {/* <NavDropdown.Item
+              <NavDropdown.Item
                 onClick={() => router.push("/dashboard/supplier")}
               >
                 Mis datos proveedor
-              </NavDropdown.Item> */}
+              </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item onClick={() => router.push("/dashboard/user")}>
                 Usuarios

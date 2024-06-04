@@ -299,6 +299,27 @@ function page() {
           filtering: true,
           addRowPosition: "first",
         }}
+        localization={{
+          pagination: {
+            lastTooltip: "Última página",
+            nextTooltip: "Siguiente página",
+            previousTooltip: "Página anterior",
+            firstTooltip: "Primer página",
+            labelRowsPerPage: "Filas por página",
+            labelRows: "Filas",
+          },
+          header: {
+            actions: "Acción",
+          },
+          body: {
+            addTooltip: "Agregar",
+            editTooltip: "Editar",
+          },
+          toolbar: {
+            searchTooltip: "Buscar",
+            searchPlaceholder: "Buscar",
+          },
+        }}
       />
     </Container>
   );

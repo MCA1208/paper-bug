@@ -386,13 +386,34 @@ function page() {
         actions={[
           {
             icon: () => <DeleteIcon />,
-            tooltip: "Delete",
+            tooltip: "Eliminar",
             onClick: (e, data) => handleRowDelete(data),
           },
         ]}
         options={{
           filtering: true,
           addRowPosition: "first",
+        }}
+        localization={{
+          pagination: {
+            lastTooltip: "Última página",
+            nextTooltip: "Siguiente página",
+            previousTooltip: "Página anterior",
+            firstTooltip: "Primer página",
+            labelRowsPerPage: "Filas por página",
+            labelRows: "Filas",
+          },
+          header: {
+            actions: "Acción",
+          },
+          body: {
+            addTooltip: "Agregar",
+            editTooltip: "Editar",
+          },
+          toolbar: {
+            searchTooltip: "Buscar",
+            searchPlaceholder: "Buscar",
+          },
         }}
       />
     </Container>
