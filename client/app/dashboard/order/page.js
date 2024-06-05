@@ -8,8 +8,6 @@ import { dictionary } from "../../constants/dictionary";
 import { Typography, Container } from "@mui/material";
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
 
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";

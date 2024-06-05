@@ -15,9 +15,6 @@ import { Placeholder } from "react-bootstrap";
 import usePlaceholder from "react-bootstrap/esm/usePlaceholder";
 
 function page() {
-  const [country, setCountry] = useState();
-  const [province, setProvince] = useState();
-  const [activity, setActivity] = useState();
   const [progress, setProgress] = useState(false);
 
   const columns = [
