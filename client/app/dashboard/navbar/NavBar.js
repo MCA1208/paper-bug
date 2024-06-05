@@ -8,18 +8,24 @@ import "./navbar.css";
 import Logo from "./descarga.png";
 import Image from "next/image";
 import { Avatar } from "@mui/material";
+import React, { useEffect } from "react";
 
 function NavBar() {
+  const [session, setSession] = React.useState("");
+
   const router = useRouter();
 
-  const stringAvatar = (name) => {
+  const stringAvatar = () => {
     return {
       sx: {
         bgcolor: "#33BEFF",
       },
-      children: `${name.split(" ")[0][0]}`,
+      children: `${session.split(" ")[0][0]}`,
     };
   };
+  useEffect(() => {
+    setSession(sessionStorage.getItem("name").toUpperCase().toString());
+  }, []);
 
   return (
     <Navbar
@@ -58,10 +64,8 @@ function NavBar() {
               >
                 Clientes
               </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => router.push("/dashboard/sending")}
-              >
-                Envíos
+              <NavDropdown.Item onClick={() => router.push("/dashboard/order")}>
+                Pedidos
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => router.push("/dashboard/supplier")}
@@ -86,9 +90,7 @@ function NavBar() {
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
-        <Avatar
-          {...stringAvatar(sessionStorage.getItem("name").toUpperCase())}
-        />
+        <Avatar {...stringAvatar()} />
       </Container>
     </Navbar>
   );
