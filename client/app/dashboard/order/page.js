@@ -8,7 +8,6 @@ import { dictionary } from "../../constants/dictionary";
 import { Typography, Container } from "@mui/material";
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
-
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -29,21 +28,38 @@ function page() {
   const [progress, setProgress] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [rowid, setRowid] = React.useState(false);
+  const [client, setClient] = React.useState(false);
+  const [stateOrder, setStateOrder] = React.useState("");
+  const [stateTracking, setStateTracking] = React.useState("");
 
   const columns = [
     { title: "id", field: "id", with: 50, hidden: true },
-    { title: "Cliente", field: "name", with: 50 },
-    { title: "Detalle", field: "email", with: 50 },
+    { title: "Cliente", field: "clientid", with: 50, lookup: client },
     {
       title: "Estado",
-      field: "state",
+      field: "stateordersid",
       with: 50,
-      lookup: {
-        false: "NO",
-        true: "SI",
-      },
+      lookup: stateOrder,
       align: "center",
     },
+    { title: "Detalle", field: "detail", with: 50 },
+    {
+      title: "Fecha inicio",
+      field: "startdate",
+      type: "date",
+      with: 80,
+      //filtering: false,
+      // render: (rowData) =>
+      //   rowData && <input type="date" value={rowData.startdate}></input>,
+    },
+    { title: "Hora inicio", field: "starthour", with: 50 },
+    {
+      title: "Fecha entrega",
+      field: "enddate",
+      with: 50,
+      type: "date",
+    },
+    { title: "Hora entrega", field: "endhour", with: 50 },
     {
       title: "Tracking",
       // field: "tracking",
@@ -64,7 +80,9 @@ function page() {
   const [tableData, setTableData] = useState();
 
   useEffect(() => {
-    handleGetUsers();
+    handleGetOrder();
+    handleGetClientList();
+    handleGetStateOrderList();
   }, []);
 
   const handleOpen = (id) => {
@@ -104,7 +122,7 @@ function page() {
                 showConfirmButton: false,
                 timer: 3000,
               });
-              handleGetUsers();
+              handleGetOrder();
             } else {
               Swal.fire({
                 title: "Error!",
@@ -182,7 +200,7 @@ function page() {
             showConfirmButton: false,
             timer: 3000,
           });
-          handleGetUsers();
+          handleGetOrder();
         } else {
           Swal.fire({
             title: "Error!",
@@ -231,7 +249,7 @@ function page() {
             showConfirmButton: false,
             timer: 6000,
           });
-          handleGetUsers();
+          handleGetOrder();
         } else {
           Swal.fire({
             title: "Error!",
@@ -256,24 +274,24 @@ function page() {
       });
   };
 
-  const handleGetUsers = async () => {
+  const handleGetOrder = async () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     };
-    await fetch(`${process.env.NEXT_PUBLIC_URL_API}/getusers`, requestOptions)
+    await fetch(`${process.env.NEXT_PUBLIC_URL_API}/getorders`, requestOptions)
       .then((response) => response.json())
       .then((data) => {
         if (data.result.status == true) {
-          const userList = data.result.data.map((row) => row);
-          setTableData(userList);
+          const orderList = data.result.data.map((row) => row);
+          setTableData(orderList);
         } else {
           Swal.fire({
             title: "Error!",
             text: "error: " + " " + data.result.data,
             icon: "error",
             confirmButtonText: "Cerrar",
-            timer: 3000,
+            timer: 6000,
           });
         }
       })
@@ -284,7 +302,76 @@ function page() {
           text: `error en la solicitud: ${error}`,
           icon: "error",
           confirmButtonText: "Cerrar",
-          timer: 3000,
+          timer: 6000,
+        });
+      });
+  };
+  const handleGetClientList = async () => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    };
+    await fetch(`${process.env.NEXT_PUBLIC_URL_API}/getclient`, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result.status == true) {
+          const client = {};
+          data.result.data.map((row) => (client[row.id] = row.name));
+          setClient(client);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "error: " + " " + data.result.data,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+            timer: 6000,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          title: "Error!",
+          text: `error en la solicitud: ${error}`,
+          icon: "error",
+          confirmButtonText: "Cerrar",
+          timer: 6000,
+        });
+      });
+  };
+  const handleGetStateOrderList = async () => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    };
+    await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/getstateorders`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result.status == true) {
+          const stateorder = {};
+          data.result.data.map((row) => (stateorder[row.id] = row.name));
+          setStateOrder(stateorder);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "error: " + " " + data.result.data,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+            timer: 6000,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          title: "Error!",
+          text: `error en la solicitud: ${error}`,
+          icon: "error",
+          confirmButtonText: "Cerrar",
+          timer: 6000,
         });
       });
   };
