@@ -37,7 +37,7 @@ router.post("/getstateorders", async (req, res) => {
   }
 });
 
-router.post("/createclient", async (req, res) => {
+router.post("/createorders", async (req, res) => {
   let result = { status: true, data: "" };
 
   try {
@@ -47,16 +47,20 @@ router.post("/createclient", async (req, res) => {
     const day = `0${date.getDate()}`.slice(-2);
 
     const formattedDate = `${year}-${month}-${day}`;
-
-    const response = await pool.query(
-      `insert into client(name, activityid, email, countryid, address, detail, 
-        telephone, active, userid, modifydate) 
+    console.log(`insert into orders(idclient, stateordersid, detail, startdate, starthour, enddate, endhour , 
+         modifyuserid, modifydate) 
             values 
-            ('${req.body.name}','${req.body.activityid}','${req.body.email}', '${req.body.countryid}', 
-            '${req.body.address}','${req.body.detail}', '${req.body.telephone}', true,' ${req.body.userId}', '${formattedDate}')`
+            (${req.body.idClient}, ${req.body.stateOrdersId} ,'${req.body.detail}', '${req.body.startDate}', 
+            '${req.body.startHour}','${req.body.endDate}', '${req.body.endHour}',  ${req.body.userId}, '${formattedDate}')`);
+    const response = await pool.query(
+      `insert into orders(clientid, stateordersid, detail, startdate, starthour, enddate, endhour , 
+         modifyuserid, modifydate) 
+            values 
+            (${req.body.clientId}, ${req.body.stateOrdersId} ,'${req.body.detail}', '${req.body.startDate}', 
+            '${req.body.startHour}','${req.body.endDate}', '${req.body.endHour}',  ${req.body.userId}, '${formattedDate}')`
     );
 
-    result.data = "Se creó con exito";
+    result.data = "OK";
 
     res.json({ result });
   } catch (error) {
@@ -82,7 +86,7 @@ router.put("/modifyclient", async (req, res) => {
       `update client set name = '${req.body.name}', activityid = ${req.body.activityId}, email = '${req.body.email}', countryid =${req.body.countryId},  address ='${req.body.address}', detail = '${req.body.detail}',  telephone ='${req.body.telephone}', active = true, userid = ${req.body.userId}, modifydate= '${formattedDate}' where id = ${req.body.id}`
     );
 
-    result.data = JSON.stringify("Actualización exitosa");
+    result.data = JSON.stringify("OK");
 
     res.json({ result });
   } catch (error) {

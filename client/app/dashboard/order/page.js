@@ -34,32 +34,65 @@ function page() {
 
   const columns = [
     { title: "id", field: "id", with: 50, hidden: true },
-    { title: "Cliente", field: "clientid", with: 50, lookup: client },
+    {
+      title: "Cliente",
+      field: "clientid",
+      with: 50,
+      lookup: client,
+      filterPlaceholder: "filtrar",
+    },
     {
       title: "Estado",
       field: "stateordersid",
       with: 50,
       lookup: stateOrder,
       align: "center",
+      cellStyle: {
+        backgroundColor: "#99DFFF",
+        color: "#000s",
+        fontWeight: "bold",
+      },
+
+      filterPlaceholder: "filtrar",
     },
-    { title: "Detalle", field: "detail", with: 50 },
+    {
+      title: "Detalle",
+      field: "detail",
+      with: 50,
+      filterPlaceholder: "filtrar",
+    },
     {
       title: "Fecha inicio",
       field: "startdate",
       type: "date",
       with: 80,
-      //filtering: false,
+      filtering: false,
+
       // render: (rowData) =>
       //   rowData && <input type="date" value={rowData.startdate}></input>,
     },
-    { title: "Hora inicio", field: "starthour", with: 50 },
+    {
+      title: "Hora inicio",
+      field: "starthour",
+      with: 50,
+      filtering: false,
+      type: "time",
+    },
     {
       title: "Fecha entrega",
       field: "enddate",
       with: 50,
       type: "date",
+      filtering: false,
+      dateSetting: { locale: "es-ES" },
     },
-    { title: "Hora entrega", field: "endhour", with: 50 },
+    {
+      title: "Hora entrega",
+      field: "endhour",
+      with: 50,
+      filtering: false,
+      type: "time",
+    },
     {
       title: "Tracking",
       // field: "tracking",
@@ -120,7 +153,7 @@ function page() {
                 icon: "success",
                 title: "Se eliminó el usuario con éxito!",
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 6000,
               });
               handleGetOrder();
             } else {
@@ -129,7 +162,7 @@ function page() {
                 text: "error al crear el proveedor" + " " + data.result.data,
                 icon: "error",
                 confirmButtonText: "Cerrar",
-                timer: 3000,
+                timer: 6000,
               });
             }
           })
@@ -140,7 +173,7 @@ function page() {
               text: "error en la solicitud" + " " + data.result.data,
               icon: "error",
               confirmButtonText: "Cerrar",
-              timer: 3000,
+              timer: 6000,
             });
           });
       } else if (result.isDenied) {
@@ -150,22 +183,12 @@ function page() {
   };
 
   const handleRowAdd = async (newRow) => {
-    var validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
-
-    if (!validEmail.test(newRow.email)) {
+    if (newRow.stateordersid != 1) {
       Swal.fire({
         title: "Error!",
-        text: "El email ingresado es invalido",
-        icon: "error",
-        confirmButtonText: "Cerrar",
-        timer: 6000,
-      });
-      return;
-    }
-    if (newRow.password.length < 6) {
-      Swal.fire({
-        title: "Error!",
-        text: "La contraseña debe tener mas de 6 caracteres",
+        text:
+          "El estado inicial solo puede ser pendiente al crear un pedido. " +
+          "Se puede modificar despues de agregar los destinos en tracking",
         icon: "error",
         confirmButtonText: "Cerrar",
         timer: 6000,
@@ -174,21 +197,42 @@ function page() {
     }
 
     setProgress(true);
+    const startDateFormat =
+      newRow.startdate.getFullYear() +
+      "-" +
+      `0${newRow.startdate.getMonth()}`.slice(-2) +
+      "-" +
+      `0${newRow.startdate.getDate()}`.slice(-2);
+    const startHourFormat =
+      `0${newRow.starthour.getHours()}`.slice(-2) +
+      ":" +
+      `0${newRow.starthour.getMinutes()}`.slice(-2);
+    const endDateFormat =
+      newRow.enddate.getFullYear() +
+      "-" +
+      `0${newRow.enddate.getMonth()}`.slice(-2) +
+      "-" +
+      `0${newRow.enddate.getDate()}`.slice(-2);
+    const endHourFormat =
+      `0${newRow.endhour.getHours()}`.slice(-2) +
+      ":" +
+      `0${newRow.endhour.getMinutes()}`.slice(-2);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        id: newRow.id,
-        name: newRow.name,
-        email: newRow.email,
-        password: newRow.password,
-        userTypeId: 1,
-        isAdmin: newRow.isadmin,
+        clientId: newRow.clientid,
+        stateOrdersId: newRow.stateordersid,
+        detail: newRow.detail,
+        startDate: startDateFormat,
+        startHour: startHourFormat,
+        endDate: endDateFormat,
+        endHour: endHourFormat,
         userId: sessionStorage.getItem("id"),
       }),
     };
     await fetch(
-      `${process.env.NEXT_PUBLIC_URL_API}/createusers`,
+      `${process.env.NEXT_PUBLIC_URL_API}/createorders`,
       requestOptions
     )
       .then((response) => response.json())
@@ -196,30 +240,29 @@ function page() {
         if (data.result.status == true) {
           Swal.fire({
             icon: "success",
-            title: "Se creó el usuario con éxito!",
+            title: "Se creó el pedido con éxito!",
             showConfirmButton: false,
-            timer: 3000,
+            timer: 6000,
           });
           handleGetOrder();
         } else {
           Swal.fire({
             title: "Error!",
-            text: "error al crear el cliente" + " " + data.result.data,
+            text: "error al crear el pedido" + " " + data.result.data,
             icon: "error",
             confirmButtonText: "Cerrar",
-            timer: 3000,
+            timer: 6000,
           });
           setProgress(false);
         }
       })
       .catch((error) => {
-        console.log(error);
         Swal.fire({
           title: "Error!",
           text: "error en la solicitud" + " " + data.result.data,
           icon: "error",
           confirmButtonText: "Cerrar",
-          timer: 3000,
+          timer: 6000,
         });
         setProgress(false);
       });
@@ -410,6 +453,10 @@ function page() {
         options={{
           filtering: true,
           addRowPosition: "first",
+          headerStyle: {
+            backgroundColor: "#01579b",
+            color: "#FFF",
+          },
         }}
         localization={{
           pagination: {
