@@ -7,8 +7,8 @@ router.post("/getorders", async (req, res) => {
 
   try {
     const response =
-      await pool.query(`select id,  detail, stateordersid, clientid, detail, TO_CHAR(startdate, 'dd/mm/yyyy') as startdate ,starthour,
-TO_CHAR(enddate, 'dd/mm/yyyy') as enddate,endhour
+      await pool.query(`select id,  detail, stateordersid, clientid, detail, TO_CHAR(startdate, 'dd/mm/yyyy') as startdate ,TO_CHAR(starthour,'HH24:MI') as starthour,
+TO_CHAR(enddate, 'dd/mm/yyyy') as enddate, TO_CHAR(endhour, 'HH24:MI') as endhour
 	from orders`);
     result.data = response.rows;
 
@@ -71,7 +71,7 @@ router.post("/createorders", async (req, res) => {
   }
 });
 
-router.put("/modifyclient", async (req, res) => {
+router.put("/modifyorders", async (req, res) => {
   let result = { status: true, data: "" };
 
   try {
@@ -81,9 +81,11 @@ router.put("/modifyclient", async (req, res) => {
     const day = `0${date.getDate()}`.slice(-2);
 
     const formattedDate = `${year}-${month}-${day}`;
-
+    console.log(
+      `update orders set clientid = '${req.body.clientId}', stateordersid = ${req.body.stateOrdersId}, detail = '${req.body.detail}', startdate =${req.body.startDate},  starthour ='${req.body.startHour}', enddate = '${req.body.endDate}',  endhour ='${req.body.endHour}',modifyuserid = ${req.body.userId}, modifydate= '${formattedDate}' where id = ${req.body.id}`
+    );
     const response = await pool.query(
-      `update client set name = '${req.body.name}', activityid = ${req.body.activityId}, email = '${req.body.email}', countryid =${req.body.countryId},  address ='${req.body.address}', detail = '${req.body.detail}',  telephone ='${req.body.telephone}', active = true, userid = ${req.body.userId}, modifydate= '${formattedDate}' where id = ${req.body.id}`
+      `update orders set clientid = '${req.body.clientId}', stateordersid = ${req.body.stateOrdersId}, detail = '${req.body.detail}', startdate ='${req.body.startDate}',  starthour ='${req.body.startHour}', enddate = '${req.body.endDate}',  endhour ='${req.body.endHour}',modifyuserid = ${req.body.userId}, modifydate= '${formattedDate}' where id = ${req.body.id}`
     );
 
     result.data = JSON.stringify("OK");

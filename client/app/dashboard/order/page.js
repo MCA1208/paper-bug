@@ -1,5 +1,6 @@
 "use client";
 
+import "./style.css";
 import React, { useEffect, useState } from "react";
 import NavBar from "../navbar/NavBar";
 import MaterialTable from "@material-table/core";
@@ -48,10 +49,36 @@ function page() {
       lookup: stateOrder,
       align: "center",
       cellStyle: {
-        backgroundColor: "#99DFFF",
+        // backgroundColor: "#99DFFF",
         color: "#000s",
         fontWeight: "bold",
       },
+      render: (rowData) =>
+        rowData && (
+          <div
+            className={
+              rowData.stateordersid == 1
+                ? "Pendiente"
+                : rowData.id == 2
+                ? "Cancelado"
+                : rowData.id == 3
+                ? "Finalizazo"
+                : rowData.id == 4
+                ? "En Curso"
+                : ""
+            }
+          >
+            {rowData.stateordersid == 1
+              ? "Pendiente"
+              : rowData.id == 2
+              ? "Cancelado"
+              : rowData.id == 3
+              ? "Finalizazo"
+              : rowData.id == 4
+              ? "En Curso"
+              : ""}
+          </div>
+        ),
 
       filterPlaceholder: "filtrar",
     },
@@ -64,34 +91,30 @@ function page() {
     {
       title: "Fecha inicio",
       field: "startdate",
-      type: "date",
+      type: "text",
       with: 80,
       filtering: false,
-
-      // render: (rowData) =>
-      //   rowData && <input type="date" value={rowData.startdate}></input>,
     },
     {
       title: "Hora inicio",
       field: "starthour",
       with: 50,
       filtering: false,
-      type: "time",
+      type: "text",
     },
     {
       title: "Fecha entrega",
       field: "enddate",
       with: 50,
-      type: "date",
+      type: "text",
       filtering: false,
-      dateSetting: { locale: "es-ES" },
     },
     {
       title: "Hora entrega",
       field: "endhour",
       with: 50,
       filtering: false,
-      type: "time",
+      type: "text",
     },
     {
       title: "Tracking",
@@ -153,7 +176,7 @@ function page() {
                 icon: "success",
                 title: "Se eliminó el usuario con éxito!",
                 showConfirmButton: false,
-                timer: 6000,
+                timer: 3000,
               });
               handleGetOrder();
             } else {
@@ -162,7 +185,7 @@ function page() {
                 text: "error al crear el proveedor" + " " + data.result.data,
                 icon: "error",
                 confirmButtonText: "Cerrar",
-                timer: 6000,
+                timer: 3000,
               });
             }
           })
@@ -173,7 +196,7 @@ function page() {
               text: "error en la solicitud" + " " + data.result.data,
               icon: "error",
               confirmButtonText: "Cerrar",
-              timer: 6000,
+              timer: 3000,
             });
           });
       } else if (result.isDenied) {
@@ -191,32 +214,22 @@ function page() {
           "Se puede modificar despues de agregar los destinos en tracking",
         icon: "error",
         confirmButtonText: "Cerrar",
-        timer: 6000,
+        timer: 3000,
       });
       return;
     }
 
-    setProgress(true);
+    const splitStartDate = newRow.startdate.split("/");
+    const splitEndDate = newRow.enddate.split("/");
     const startDateFormat =
-      newRow.startdate.getFullYear() +
-      "-" +
-      `0${newRow.startdate.getMonth()}`.slice(-2) +
-      "-" +
-      `0${newRow.startdate.getDate()}`.slice(-2);
-    const startHourFormat =
-      `0${newRow.starthour.getHours()}`.slice(-2) +
-      ":" +
-      `0${newRow.starthour.getMinutes()}`.slice(-2);
+      splitStartDate[2] + "-" + splitStartDate[1] + "-" + splitStartDate[0];
+    const startHourFormat = newRow.starthour;
     const endDateFormat =
-      newRow.enddate.getFullYear() +
-      "-" +
-      `0${newRow.enddate.getMonth()}`.slice(-2) +
-      "-" +
-      `0${newRow.enddate.getDate()}`.slice(-2);
-    const endHourFormat =
-      `0${newRow.endhour.getHours()}`.slice(-2) +
-      ":" +
-      `0${newRow.endhour.getMinutes()}`.slice(-2);
+      splitEndDate[2] + "-" + splitEndDate[1] + "-" + splitEndDate[0];
+    const endHourFormat = newRow.endhour;
+
+    setProgress(true);
+
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -242,7 +255,7 @@ function page() {
             icon: "success",
             title: "Se creó el pedido con éxito!",
             showConfirmButton: false,
-            timer: 6000,
+            timer: 3000,
           });
           handleGetOrder();
         } else {
@@ -251,7 +264,7 @@ function page() {
             text: "error al crear el pedido" + " " + data.result.data,
             icon: "error",
             confirmButtonText: "Cerrar",
-            timer: 6000,
+            timer: 3000,
           });
           setProgress(false);
         }
@@ -262,35 +275,48 @@ function page() {
           text: "error en la solicitud" + " " + data.result.data,
           icon: "error",
           confirmButtonText: "Cerrar",
-          timer: 6000,
+          timer: 3000,
         });
         setProgress(false);
       });
   };
 
   const handleRowUpdate = async (newRow, oldRow) => {
+    const splitStartDate = newRow.startdate.split("/");
+    const splitEndDate = newRow.enddate.split("/");
+    const startDateFormat =
+      splitStartDate[2] + "-" + splitStartDate[1] + "-" + splitStartDate[0];
+    const startHourFormat = newRow.starthour;
+    const endDateFormat =
+      splitEndDate[2] + "-" + splitEndDate[1] + "-" + splitEndDate[0];
+    const endHourFormat = newRow.endhour;
     const requestOptions = {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         id: newRow.id,
-        name: newRow.name,
-        email: newRow.email,
-        password: newRow.password,
-        userTypeId: 1,
-        isAdmin: newRow.isadmin,
+        clientId: newRow.clientid,
+        stateOrdersId: newRow.stateordersid,
+        detail: newRow.detail,
+        startDate: startDateFormat,
+        startHour: startHourFormat,
+        endDate: endDateFormat,
+        endHour: endHourFormat,
         userId: sessionStorage.getItem("id"),
       }),
     };
-    await fetch(`${process.env.NEXT_PUBLIC_URL_API}/modifyuser`, requestOptions)
+    await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/modifyorders`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((data) => {
         if (data.result.status == true) {
           Swal.fire({
             icon: "success",
-            title: "Se actualizó el usuario con éxito!",
+            title: "Se actualizó el pedido con éxito!",
             showConfirmButton: false,
-            timer: 6000,
+            timer: 3000,
           });
           handleGetOrder();
         } else {
@@ -299,7 +325,7 @@ function page() {
             text: "error al modificar el usuario" + " " + data.result.data,
             icon: "error",
             confirmButtonText: "Cerrar",
-            timer: 6000,
+            timer: 3000,
           });
           setProgress(false);
         }
@@ -311,7 +337,7 @@ function page() {
           text: "error en la solicitud" + " " + data.result.data,
           icon: "error",
           confirmButtonText: "Cerrar",
-          timer: 6000,
+          timer: 3000,
         });
         setProgress(false);
       });
@@ -334,7 +360,7 @@ function page() {
             text: "error: " + " " + data.result.data,
             icon: "error",
             confirmButtonText: "Cerrar",
-            timer: 6000,
+            timer: 3000,
           });
         }
       })
@@ -345,7 +371,7 @@ function page() {
           text: `error en la solicitud: ${error}`,
           icon: "error",
           confirmButtonText: "Cerrar",
-          timer: 6000,
+          timer: 3000,
         });
       });
   };
@@ -367,7 +393,7 @@ function page() {
             text: "error: " + " " + data.result.data,
             icon: "error",
             confirmButtonText: "Cerrar",
-            timer: 6000,
+            timer: 3000,
           });
         }
       })
@@ -378,7 +404,7 @@ function page() {
           text: `error en la solicitud: ${error}`,
           icon: "error",
           confirmButtonText: "Cerrar",
-          timer: 6000,
+          timer: 3000,
         });
       });
   };
@@ -403,7 +429,7 @@ function page() {
             text: "error: " + " " + data.result.data,
             icon: "error",
             confirmButtonText: "Cerrar",
-            timer: 6000,
+            timer: 3000,
           });
         }
       })
@@ -414,9 +440,25 @@ function page() {
           text: `error en la solicitud: ${error}`,
           icon: "error",
           confirmButtonText: "Cerrar",
-          timer: 6000,
+          timer: 3000,
         });
       });
+  };
+
+  const validInputSave = (newRow) => {
+    if (
+      newRow.clientid == undefined &&
+      newRow.stateordersid &&
+      newRow.detail &&
+      newRow.startdate &&
+      newRow.starthour &&
+      newRow.endhour &&
+      newRow.endhour
+    ) {
+    }
+  };
+  const formatDate = (date) => {
+    return date.toLocaleDateString("en-GB"); // 'en-GB' locale formats the date as dd/MM/yyyy
   };
 
   return (
@@ -525,6 +567,15 @@ function page() {
           </Button>
         </DialogActions>
       </BootstrapDialog>
+
+      <div class="form-group">
+        <input
+          type="date"
+          class="form-control item"
+          id="birth-date"
+          placeholder="Birth Date"
+        />
+      </div>
     </Container>
   );
 }

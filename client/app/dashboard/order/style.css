@@ -1,0 +1,21 @@
+.Pendiente{
+    background-color: yellow;
+    border-style: outset;
+    padding: 10px;
+
+}
+.Cancelado{
+    background-color: #F87575;
+    border-style: outset;
+    padding: 10px;
+}
+.Finalizazo{
+    background-color: #80E1F9;
+    border-style: outset;
+    padding: 10px;
+}
+.Curso{
+    background-color:#A6FAB9;
+    border-style: outset;
+    padding: 10px;
+}

@@ -108,7 +108,7 @@ function page() {
         text: "El email ingresado es invalido",
         icon: "error",
         confirmButtonText: "Cerrar",
-        timer: 6000,
+        timer: 3000,
       });
       return;
     }
@@ -186,7 +186,7 @@ function page() {
             icon: "success",
             title: "Se actualizó el usuario con éxito!",
             showConfirmButton: false,
-            timer: 6000,
+            timer: 3000,
           });
           handleGetUsers();
         } else {
@@ -195,7 +195,7 @@ function page() {
             text: "error al modificar el usuario" + " " + data.result.data,
             icon: "error",
             confirmButtonText: "Cerrar",
-            timer: 6000,
+            timer: 3000,
           });
           setProgress(false);
         }
@@ -207,7 +207,7 @@ function page() {
           text: "error en la solicitud" + " " + data.result.data,
           icon: "error",
           confirmButtonText: "Cerrar",
-          timer: 6000,
+          timer: 3000,
         });
         setProgress(false);
       });
